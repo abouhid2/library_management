@@ -1,0 +1,168 @@
+# Library Management System - User Story Example
+
+## Epic: Library Management System
+**As a** library administrator  
+**I want** a comprehensive library management system  
+**So that** I can efficiently manage books, members, and borrowing operations
+
+---
+
+## User Story 1: User Authentication and Authorization
+
+**As a** user (Librarian or Member)  
+**I want** to register, log in, and log out of the system  
+**So that** I can access the library management features securely
+
+**Acceptance Criteria:**
+- Users can register with email, password, name, and user type (Librarian/Member)
+- Users can log in with their credentials
+- Users can log out securely
+- Session management is properly handled
+- Only Librarian users can access book management features (add, edit, delete)
+
+**API Endpoints:**
+- POST /api/auth/register
+- POST /api/auth/login
+- DELETE /api/auth/logout
+- GET /api/auth/me
+
+---
+
+## User Story 2: Book Management (Librarian Only)
+
+**As a** Librarian  
+**I want** to manage books in the library system  
+**So that** I can maintain an accurate catalog of available books
+
+**Acceptance Criteria:**
+- Can add new books with title, author, genre, ISBN, and total copies
+- Can edit existing book details
+- Can delete books from the system
+- Can view all books in the library
+- Can search books by title, author, or genre
+- Only Librarian users can perform these operations
+
+**API Endpoints:**
+- GET /api/books (with search parameters)
+- POST /api/books
+- GET /api/books/:id
+- PUT /api/books/:id
+- DELETE /api/books/:id
+
+---
+
+## User Story 3: Book Borrowing (Members Only)
+
+**As a** Member  
+**I want** to borrow available books  
+**So that** I can read books from the library
+
+**Acceptance Criteria:**
+- Can view available books for borrowing
+- Can borrow a book if it's available
+- Cannot borrow the same book multiple times
+- System tracks borrowing date and due date (2 weeks from borrowing)
+- System prevents borrowing when no copies are available
+
+**API Endpoints:**
+- GET /api/books/available
+- POST /api/borrowings
+- GET /api/borrowings/my-books
+
+---
+
+## User Story 4: Book Returning (Librarian Only)
+
+**As a** Librarian  
+**I want** to mark books as returned  
+**So that** I can track when books come back to the library
+
+**Acceptance Criteria:**
+- Can mark a borrowed book as returned
+- System updates book availability
+- System records return date
+- Can view all current borrowings
+
+**API Endpoints:**
+- PUT /api/borrowings/:id/return
+- GET /api/borrowings
+
+---
+
+## User Story 5: Librarian Dashboard
+
+**As a** Librarian  
+**I want** a comprehensive dashboard  
+**So that** I can monitor library operations and manage overdue books
+
+**Acceptance Criteria:**
+- View total number of books in the library
+- View total number of currently borrowed books
+- View books due today
+- View list of members with overdue books
+- Quick access to book management functions
+
+**API Endpoints:**
+- GET /api/dashboard/librarian
+- GET /api/borrowings/overdue
+
+---
+
+## User Story 6: Member Dashboard
+
+**As a** Member  
+**I want** a personal dashboard  
+**So that** I can track my borrowed books and due dates
+
+**Acceptance Criteria:**
+- View all books I've borrowed
+- See due dates for each borrowed book
+- Highlight overdue books
+- Quick access to available books for borrowing
+
+**API Endpoints:**
+- GET /api/dashboard/member
+- GET /api/borrowings/my-books
+
+---
+
+## User Story 7: Search Functionality
+
+**As a** user  
+**I want** to search for books  
+**So that** I can quickly find books I'm interested in
+
+**Acceptance Criteria:**
+- Search by book title
+- Search by author name
+- Search by genre
+- Search results are paginated
+- Search is case-insensitive
+- Empty search returns all books
+
+**API Endpoints:**
+- GET /api/books?search=query&filter=title|author|genre
+
+---
+
+## User Story 8: Frontend Integration
+
+**As a** user  
+**I want** a responsive and user-friendly web interface  
+**So that** I can easily interact with the library management system
+
+**Acceptance Criteria:**
+- Responsive design that works on desktop and mobile
+- Clean, modern UI with intuitive navigation
+- Role-based access control (different views for Librarian vs Member)
+- Real-time updates for book availability
+- Form validation and error handling
+- Loading states and user feedback
+
+**Frontend Features:**
+- Authentication pages (login/register)
+- Dashboard views for both user types
+- Book management interface (Librarian)
+- Book browsing and borrowing interface (Member)
+- Search functionality with filters
+- Responsive navigation and layout

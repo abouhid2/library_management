@@ -76,3 +76,7 @@ vendor/
 /db/structure.sql
 storage/*
 !/storage/.keep
+
+# Docker files
+Dockerfile*
+.dockerignore

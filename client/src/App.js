@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Login from "./components/Login";
+import Login from "./features/auth/components/Login";
 import Dashboard from "./components/Dashboard";
 import { authAPI } from "./services/api";
 

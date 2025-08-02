@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Books from "./Books";
+import Books from "../features/books/components/Books";
 
 const Dashboard = ({ user, onLogout }) => {
   const [activeTab, setActiveTab] = useState("dashboard");

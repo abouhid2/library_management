@@ -60,14 +60,28 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-lg text-gray-600">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-primary">
+        <div className="text-center">
+          <div className="mb-4">
+            <img
+              src="/b2g_logo.png"
+              alt="Books 2 Go"
+              className="w-24 h-24 mx-auto mb-4"
+            />
+          </div>
+          <div className="text-lg text-secondary font-medium">
+            Loading Books 2 Go...
+          </div>
+          <div className="mt-2 text-accent text-sm">
+            Your library management system
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-primary">
       {user ? (
         <DashboardLayout user={user} onLogout={handleLogout} />
       ) : (

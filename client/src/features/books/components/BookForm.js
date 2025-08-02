@@ -236,7 +236,7 @@ const BookForm = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-3 py-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded text-xs font-medium transition-colors duration-200"
+              className="px-3 py-1 bg-highlight hover:bg-accent disabled:bg-neutral text-secondary rounded text-xs font-medium transition-colors duration-200"
             >
               {isSubmitting ? "Saving..." : "Save"}
             </button>
@@ -418,14 +418,14 @@ const BookForm = ({
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md text-sm font-medium transition-colors duration-200"
+            className="px-4 py-2 text-neutral bg-primary hover:bg-primary-hover rounded-md text-sm font-medium transition-colors duration-200"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-md text-sm font-medium transition-colors duration-200"
+            className="px-4 py-2 bg-highlight hover:bg-accent disabled:bg-neutral text-secondary rounded-md text-sm font-medium transition-colors duration-200"
           >
             {isSubmitting
               ? "Saving..."

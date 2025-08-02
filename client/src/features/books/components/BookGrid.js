@@ -151,13 +151,13 @@ const BookGrid = ({
 
               {/* Book Info */}
               <div className="p-4 space-y-2">
-                <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 group-hover:text-blue-600 transition-colors duration-200">
+                <h3 className="font-semibold text-secondary text-sm line-clamp-2 group-hover:text-highlight transition-colors duration-200">
                   {book.title}
                 </h3>
-                <p className="text-gray-600 text-xs line-clamp-1">
+                <p className="text-neutral text-xs line-clamp-1">
                   by {book.author}
                 </p>
-                <p className="text-gray-500 text-xs line-clamp-1">
+                <p className="text-neutral text-xs line-clamp-1">
                   {book.genre}
                 </p>
 
@@ -168,7 +168,7 @@ const BookGrid = ({
                     <div className="flex space-x-2">
                       <button
                         onClick={() => handleEditClick(book)}
-                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-2 px-3 rounded transition-colors duration-200"
+                        className="flex-1 bg-highlight hover:bg-accent text-secondary text-xs font-medium py-2 px-3 rounded transition-colors duration-200"
                       >
                         Edit
                       </button>
@@ -226,8 +226,8 @@ const BookGrid = ({
               onClick={() => handlePageChange(page)}
               className={`px-3 py-2 text-sm font-medium rounded-md ${
                 currentPage === page
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
+                  ? "bg-highlight text-secondary"
+                  : "bg-white text-neutral hover:bg-primary border border-neutral"
               }`}
             >
               {page}

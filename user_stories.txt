@@ -1,6 +1,6 @@
-# Library Management System - User Story Example
+# Library Management System - User Stories
 
-## Epic: Library Management System
+## Epic: Books 2 Go
 **As a** library administrator  
 **I want** a comprehensive library management system  
 **So that** I can efficiently manage books, members, and borrowing operations

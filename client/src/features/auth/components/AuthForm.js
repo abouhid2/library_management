@@ -95,7 +95,7 @@ const AuthForm = ({
               name="name"
               type="text"
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 block w-full px-3 py-2 border border-neutral rounded-md shadow-sm placeholder-neutral focus:outline-none focus:ring-highlight focus:border-highlight"
               value={formData.name}
               onChange={handleChange}
             />
@@ -105,7 +105,7 @@ const AuthForm = ({
         <div>
           <label
             htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-secondary"
           >
             Email Address
           </label>
@@ -115,7 +115,7 @@ const AuthForm = ({
             type="email"
             autoComplete="email"
             required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            className="mt-1 block w-full px-3 py-2 border border-neutral rounded-md shadow-sm placeholder-neutral focus:outline-none focus:ring-highlight focus:border-highlight"
             value={formData.email}
             onChange={handleChange}
           />
@@ -124,7 +124,7 @@ const AuthForm = ({
         <div>
           <label
             htmlFor="password"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-secondary"
           >
             Password
           </label>
@@ -136,7 +136,7 @@ const AuthForm = ({
               mode === "login" ? "current-password" : "new-password"
             }
             required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            className="mt-1 block w-full px-3 py-2 border border-neutral rounded-md shadow-sm placeholder-neutral focus:outline-none focus:ring-highlight focus:border-highlight"
             value={formData.password}
             onChange={handleChange}
           />
@@ -147,7 +147,7 @@ const AuthForm = ({
             <div>
               <label
                 htmlFor="passwordConfirmation"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-secondary"
               >
                 Confirm Password
               </label>
@@ -157,7 +157,7 @@ const AuthForm = ({
                 type="password"
                 autoComplete="new-password"
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-neutral rounded-md shadow-sm placeholder-neutral focus:outline-none focus:ring-highlight focus:border-highlight"
                 value={formData.passwordConfirmation}
                 onChange={handleChange}
               />
@@ -166,14 +166,14 @@ const AuthForm = ({
             <div>
               <label
                 htmlFor="userType"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-secondary"
               >
                 User Type
               </label>
               <select
                 id="userType"
                 name="userType"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-neutral rounded-md shadow-sm focus:outline-none focus:ring-highlight focus:border-highlight"
                 value={formData.userType}
                 onChange={handleChange}
               >
@@ -188,7 +188,7 @@ const AuthForm = ({
           <button
             type="submit"
             disabled={loading}
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-secondary bg-highlight hover:bg-accent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-highlight disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading
               ? mode === "login"

@@ -4,6 +4,38 @@ class Api::ApplicationController < ApplicationController
 
   private
 
+  def authenticate_user!
+    unless current_user
+      render json: { error: 'Authentication required' }, status: :unauthorized
+    end
+  end
+
+  def current_user
+    @current_user ||= User.find_by(id: decoded_token["user_id"]) if decoded_token
+  rescue JWT::DecodeError => e
+    Rails.logger.error "JWT Decode Error: #{e.message}"
+    nil
+  end
+
+  def decoded_token
+    return nil unless token
+    
+    @decoded_token ||= begin
+      decoded = JWT.decode(token, Rails.application.credentials.secret_key_base, true, { algorithm: 'HS256' })[0]
+      Rails.logger.info "Decoded token: #{decoded}"
+      decoded
+    end
+  rescue JWT::DecodeError => e
+    Rails.logger.error "JWT Decode Error: #{e.message}"
+    nil
+  end
+
+  def token
+    auth_header = request.headers['Authorization']
+    Rails.logger.info "Auth header: #{auth_header}"
+    auth_header&.split(' ')&.last
+  end
+
   def set_default_format
     request.format = :json
   end

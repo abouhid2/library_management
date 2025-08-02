@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { authAPI } from "../services/api";
 
-const Login = ({ onLogin }) => {
+const Login = ({ onLogin, initialError, onClearError }) => {
   const [mode, setMode] = useState("login"); // "login" or "register"
   const [formData, setFormData] = useState({
     email: "",
@@ -13,9 +13,19 @@ const Login = ({ onLogin }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Set initial error when component mounts or when initialError changes
+  useEffect(() => {
+    if (initialError) {
+      setError(initialError);
+    }
+  }, [initialError]);
+
   const handleModeChange = (newMode) => {
     setMode(newMode);
     setError("");
+    if (onClearError) {
+      onClearError();
+    }
     setFormData({
       email: "",
       password: "",
@@ -26,6 +36,12 @@ const Login = ({ onLogin }) => {
   };
 
   const handleChange = (e) => {
+    // Clear error when user starts typing
+    if (error && onClearError) {
+      onClearError();
+    }
+    setError("");
+
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -78,9 +94,9 @@ const Login = ({ onLogin }) => {
       }
 
       if (response.data.success) {
-        // Store user data in localStorage
+        // Store user data and JWT token in localStorage
         localStorage.setItem("user", JSON.stringify(response.data.user));
-        localStorage.setItem("authToken", "dummy-token"); // In a real app, you'd use JWT
+        localStorage.setItem("authToken", response.data.token);
         onLogin(response.data.user);
       }
     } catch (err) {
@@ -142,7 +158,10 @@ const Login = ({ onLogin }) => {
           <form className="space-y-6" onSubmit={handleSubmit}>
             {mode === "register" && (
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Full Name
                 </label>
                 <input
@@ -158,7 +177,10 @@ const Login = ({ onLogin }) => {
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email Address
               </label>
               <input
@@ -174,14 +196,19 @@ const Login = ({ onLogin }) => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <input
                 id="password"
                 name="password"
                 type="password"
-                autoComplete={mode === "login" ? "current-password" : "new-password"}
+                autoComplete={
+                  mode === "login" ? "current-password" : "new-password"
+                }
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 value={formData.password}
@@ -192,7 +219,10 @@ const Login = ({ onLogin }) => {
             {mode === "register" && (
               <>
                 <div>
-                  <label htmlFor="passwordConfirmation" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="passwordConfirmation"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Confirm Password
                   </label>
                   <input
@@ -208,7 +238,10 @@ const Login = ({ onLogin }) => {
                 </div>
 
                 <div>
-                  <label htmlFor="userType" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="userType"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     User Type
                   </label>
                   <select

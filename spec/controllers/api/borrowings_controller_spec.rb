@@ -7,7 +7,7 @@ RSpec.describe Api::BorrowingsController, type: :controller do
   let(:borrowing) { create(:borrowing, user: member, book: book) }
 
   describe 'GET #index' do
-    context 'when user is authenticated' do
+    context 'when user is a member' do
       before do
         request.headers.merge!(auth_headers_for(member))
       end
@@ -17,7 +17,7 @@ RSpec.describe Api::BorrowingsController, type: :controller do
         expect(response).to be_successful
       end
 
-      it 'returns user\'s borrowings' do
+      it 'returns only user\'s borrowings' do
         create_list(:borrowing, 3, user: member)
         create(:borrowing, user: create(:user, :member)) # Different user
 
@@ -30,6 +30,41 @@ RSpec.describe Api::BorrowingsController, type: :controller do
         get :index
         response_body = JSON.parse(response.body)
         expect(response_body).to eq([])
+      end
+    end
+
+    context 'when user is a librarian' do
+      before do
+        request.headers.merge!(auth_headers_for(librarian))
+      end
+
+      it 'returns a successful response' do
+        get :index
+        expect(response).to be_successful
+      end
+
+      it 'returns all borrowings in the system' do
+        member1 = create(:user, :member)
+        member2 = create(:user, :member)
+        create_list(:borrowing, 2, user: member1)
+        create_list(:borrowing, 3, user: member2)
+
+        get :index
+        response_body = JSON.parse(response.body)
+        expect(response_body.size).to eq(5)
+      end
+
+      it 'includes user and book information in response' do
+        borrowing = create(:borrowing, user: member, book: book)
+
+        get :index
+        response_body = JSON.parse(response.body)
+        first_borrowing = response_body.first
+
+        expect(first_borrowing['user']).to be_present
+        expect(first_borrowing['book']).to be_present
+        expect(first_borrowing['user']['name']).to eq(member.name)
+        expect(first_borrowing['book']['title']).to eq(book.title)
       end
     end
 

@@ -21,6 +21,7 @@ const Books = ({ user, searchQuery = "" }) => {
     updateBook,
     deleteBook,
     setError,
+    refreshBooks,
   } = useBooks(searchQuery);
 
   const {
@@ -71,13 +72,15 @@ const Books = ({ user, searchQuery = "" }) => {
       await deleteBook(bookId);
       showNotification("Book deleted successfully!");
     } catch (err) {
-      showNotification("Failed to delete book", "error");
+      const errorMessage = err.response?.data?.error || "Failed to delete book";
+      showNotification(errorMessage, "error");
     }
   };
 
   const handleBorrow = async (bookId) => {
     try {
       await borrowBook(bookId);
+      await refreshBooks();
       showNotification("Book borrowed successfully! Due in 2 weeks.");
     } catch (err) {
       const errorMessage = err.response?.data?.error || "Failed to borrow book";
@@ -88,6 +91,7 @@ const Books = ({ user, searchQuery = "" }) => {
   const handleReturn = async (borrowingId) => {
     try {
       await returnBook(borrowingId);
+      await refreshBooks();
       showNotification("Book returned successfully!");
     } catch (err) {
       const errorMessage = err.response?.data?.error || "Failed to return book";

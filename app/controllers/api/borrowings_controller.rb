@@ -7,8 +7,12 @@ class Api::BorrowingsController < Api::ApplicationController
 
   # GET /api/borrowings
   def index
-    @borrowings = current_user.borrowings.includes(:book)
-    render json: @borrowings.as_json(include: :book)
+    if current_user.librarian?
+      @borrowings = Borrowing.includes(:user, :book)
+    else
+      @borrowings = current_user.borrowings.includes(:book)
+    end
+    render json: @borrowings.as_json(include: [ :user, :book ])
   end
 
   # GET /api/borrowings/:id

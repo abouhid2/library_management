@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import DashboardHeader from "./DashboardHeader";
 import DashboardStats from "./DashboardStats";
 import BorrowingsList from "./BorrowingsList";
-import ErrorDisplay from "./ErrorDisplay";
+import ErrorDisplay from "./form/ErrorDisplay";
 import Notification from "../../../components/Notification";
 import { useBorrowings } from "../hooks/useBorrowings";
 import { useDashboard } from "../hooks/useDashboard";

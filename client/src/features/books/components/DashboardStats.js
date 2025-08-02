@@ -3,6 +3,7 @@ import React from "react";
 const DashboardStats = ({ stats, isLibrarian }) => {
   const {
     total_books: totalBooks = 0,
+    total_copies: totalCopies = 0,
     total_borrowed: totalBorrowed = 0,
     books_due_today: booksDueToday = 0,
     overdue_count: overdueCount = 0,
@@ -13,8 +14,8 @@ const DashboardStats = ({ stats, isLibrarian }) => {
     ? [
         {
           title: "Total Books",
-          value: totalBooks,
-          description: "Books in library",
+          value: `${totalBooks} (${totalCopies})`,
+          description: "Books in library (total copies)",
           color: "bg-highlight",
           icon: "📚",
         },
@@ -22,7 +23,7 @@ const DashboardStats = ({ stats, isLibrarian }) => {
           title: "Currently Borrowed",
           value: totalBorrowed,
           description: "Books checked out",
-          color: "bg-success",
+          color: "bg-highlight",
           icon: "📖",
         },
         {
@@ -49,23 +50,20 @@ const DashboardStats = ({ stats, isLibrarian }) => {
           icon: "📚",
         },
         {
-          title: "My Borrowed",
+          title: "My Borrowed Books",
           value: myBorrowed,
-          description: "Books I've borrowed",
-          color: "bg-success",
+          color: "bg-highlight",
           icon: "📖",
         },
         {
           title: "Due Today",
           value: booksDueToday,
-          description: "My books due today",
           color: "bg-warning",
           icon: "📅",
         },
         {
           title: "My Overdue",
           value: overdueCount,
-          description: "My overdue books",
           color: "bg-error",
           icon: "⚠️",
         },

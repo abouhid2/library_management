@@ -28,7 +28,8 @@
 
 **Acceptance Criteria:**
 - Can add new books with title, author, genre, ISBN, and total copies
-- Can edit existing book details
+- Can edit existing book details (title, author, genre, ISBN, total copies)
+- Cannot edit available copies as they are automatically managed by the borrowing system
 - Can delete books from the system
 - Can view all books in the library
 - Can search books by title, author, or genre
@@ -106,9 +107,31 @@
 - Clicking the edit button on a book card opens an edit form directly within that card
 - The edit form replaces the book information display in the same grid position
 - Form includes fields for title, author, genre, ISBN, and total copies
+- Available copies field is read-only as it's managed by the borrowing system
 - Save and cancel buttons are available within the inline form
 - After saving, the card returns to display mode with updated information
 - After canceling, the card returns to display mode without changes
 - Only Librarian users can see and use the edit functionality
 - Grid layout adjusts automatically when forms are opened/closed
 - Visual feedback indicates which card is currently being edited
+
+---
+
+## User Story 8: Book Image Upload
+
+**As a** Librarian  
+**I want** to upload and manage book cover images directly to the system  
+**So that** I can provide visual representation of books without relying on external URLs
+
+**Acceptance Criteria:**
+- Can upload image files (JPG, PNG, WebP) when adding new books
+- Can update book cover images for existing books
+- System stores images securely on the server
+- Images are automatically resized and optimized for web display
+- Book cover images are displayed in the book grid view
+- Book cover images are displayed in book detail views
+- System provides a default placeholder image for books without covers
+- Image upload supports drag-and-drop functionality
+- File size limits are enforced (max 5MB per image)
+- Only Librarian users can upload and manage book images
+- Images are displayed in appropriate aspect ratios across different screen sizes

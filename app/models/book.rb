@@ -2,6 +2,7 @@ class Book < ApplicationRecord
   # Associations
   has_many :borrowings, dependent: :destroy
   has_many :borrowers, through: :borrowings, source: :user
+  has_one_attached :image
 
   # Validations
   validates :title, presence: true
@@ -12,6 +13,7 @@ class Book < ApplicationRecord
   validates :available_copies, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validate :isbn_format
   validate :available_copies_cannot_exceed_total
+  validate :acceptable_image
 
   # Callbacks
   before_validation :set_default_available_copies
@@ -50,9 +52,13 @@ class Book < ApplicationRecord
 
   # Image methods
   def image_url
-    return image if image.present?
-    # Return nil when no image is present - frontend will handle placeholder
-    nil
+    return nil unless image.attached?
+    Rails.application.routes.url_helpers.rails_blob_url(image, only_path: false, host: Rails.application.config.action_mailer.default_url_options[:host] || 'localhost:3000')
+  end
+
+  def thumbnail_url
+    return nil unless image.attached?
+    Rails.application.routes.url_helpers.rails_blob_url(image.variant(resize_to_limit: [200, 200]), only_path: false, host: Rails.application.config.action_mailer.default_url_options[:host] || 'localhost:3000')
   end
 
   # Borrowing methods
@@ -117,6 +123,19 @@ class Book < ApplicationRecord
 
     if available_copies > total_copies
       errors.add(:available_copies, "cannot exceed total copies")
+    end
+  end
+
+  def acceptable_image
+    return unless image.attached?
+
+    unless image.blob.byte_size <= 5.megabyte
+      errors.add(:image, "is too big (should be less than 5MB)")
+    end
+
+    acceptable_types = ["image/jpeg", "image/png", "image/gif", "image/webp"]
+    unless acceptable_types.include?(image.blob.content_type)
+      errors.add(:image, "must be a JPEG, PNG, GIF, or WebP")
     end
   end
 

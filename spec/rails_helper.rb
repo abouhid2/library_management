@@ -85,3 +85,6 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+# Configure default URL options for Active Storage in tests
+Rails.application.config.action_mailer.default_url_options = { host: 'localhost:3000' }

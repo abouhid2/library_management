@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import BookForm from "./BookForm";
 import BookHeader from "./BookHeader";
 import BookList from "./BookList";
-import ErrorDisplay from "./ErrorDisplay";
+import ErrorDisplay from "./form/ErrorDisplay";
 import Notification from "../../../components/Notification";
 import { useBooks } from "../hooks/useBooks";
 import { useBorrowings } from "../hooks/useBorrowings";

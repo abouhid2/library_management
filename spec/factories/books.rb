@@ -33,11 +33,17 @@ FactoryBot.define do
     end
 
     trait :with_image do
-      image { "https://example.com/book-cover.jpg" }
+      after(:create) do |book|
+        book.image.attach(
+          io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'test_image.jpg')),
+          filename: 'test_image.jpg',
+          content_type: 'image/jpeg'
+        )
+      end
     end
 
     trait :without_image do
-      image { nil }
+      # No image attached (default behavior)
     end
   end
 end

@@ -1,8 +1,7 @@
 class Api::AuthController < ApplicationController
-  
   def login
     user = User.find_by(email: params[:email])
-    
+
     if user&.valid_password?(params[:password])
       render json: {
         success: true,
@@ -14,13 +13,13 @@ class Api::AuthController < ApplicationController
         }
       }
     else
-      render json: { success: false, message: 'Invalid email or password' }, status: :unauthorized
+      render json: { success: false, message: "Invalid email or password" }, status: :unauthorized
     end
   end
 
   def register
     user = User.new(user_params)
-    
+
     if user.save
       render json: {
         success: true,
@@ -38,7 +37,7 @@ class Api::AuthController < ApplicationController
 
   def me
     # For now, return a simple response since we're not implementing token-based auth yet
-    render json: { success: false, message: 'Not implemented yet' }, status: :not_implemented
+    render json: { success: false, message: "Not implemented yet" }, status: :not_implemented
   end
 
   private

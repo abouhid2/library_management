@@ -12,13 +12,6 @@ const BorrowingsList = ({
 }) => {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900">
-          {showOverdue
-            ? `Overdue Borrowings (${overdueCount})`
-            : `${isLibrarian ? "All" : "My"} Active Borrowings (${activeBorrowingsCount})`}
-        </h3>
-      </div>
       <BorrowingsTable
         borrowings={borrowings}
         isLibrarian={isLibrarian}
@@ -29,4 +22,4 @@ const BorrowingsList = ({
   );
 };
 
-export default BorrowingsList; 
+export default BorrowingsList;

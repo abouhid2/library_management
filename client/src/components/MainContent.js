@@ -1,6 +1,6 @@
 import React from "react";
 import Books from "../features/books/components/Books";
-import Borrowings from "../features/books/components/Borrowings";
+import Dashboard from "../features/books/components/Dashboard";
 
 const MainContent = ({ activeTab, user, searchQuery }) => {
   return (
@@ -8,10 +8,10 @@ const MainContent = ({ activeTab, user, searchQuery }) => {
       {activeTab === "books" ? (
         <Books user={user} searchQuery={searchQuery} />
       ) : (
-        <Borrowings user={user} />
+        <Dashboard user={user} />
       )}
     </div>
   );
 };
 
-export default MainContent; 
+export default MainContent;

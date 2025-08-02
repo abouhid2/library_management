@@ -19,6 +19,12 @@ Rails.application.routes.draw do
         get :my_overdue
       end
     end
+
+    namespace :dashboard do
+      get :librarian
+      get :member
+      get :stats
+    end
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

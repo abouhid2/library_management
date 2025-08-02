@@ -1,6 +1,6 @@
 import React from "react";
 
-const BorrowingsHeader = ({
+const DashboardHeader = ({
   isLibrarian,
   overdueCount,
   showOverdue,
@@ -8,9 +8,16 @@ const BorrowingsHeader = ({
 }) => {
   return (
     <div className="flex justify-between items-center">
-      <h2 className="text-2xl font-bold text-gray-900">
-        {isLibrarian ? "All Borrowings" : "My Borrowings"}
-      </h2>
+      <div>
+        <h2 className="text-3xl font-bold text-gray-900">
+          {isLibrarian ? "Librarian Dashboard" : "My Dashboard"}
+        </h2>
+        <p className="text-gray-600 mt-1">
+          {isLibrarian
+            ? "Monitor library operations and manage borrowings"
+            : "Track your borrowed books and due dates"}
+        </p>
+      </div>
       <div className="flex space-x-3">
         <button
           onClick={onToggleOverdue}
@@ -27,4 +34,4 @@ const BorrowingsHeader = ({
   );
 };
 
-export default BorrowingsHeader;
+export default DashboardHeader;

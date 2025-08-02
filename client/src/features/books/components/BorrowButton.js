@@ -63,14 +63,14 @@ const BorrowButton = ({
         <button
           onClick={handleBorrowClick}
           disabled={isSubmitting || disabled}
-          className="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 rounded-md transition-colors duration-200"
+          className="inline-flex items-center px-3 py-1 text-sm font-medium text-secondary bg-highlight hover:bg-accent disabled:bg-neutral rounded-md transition-colors duration-200"
         >
           {isSubmitting ? "Borrowing..." : "Confirm"}
         </button>
         <button
           onClick={handleCancel}
           disabled={isSubmitting}
-          className="inline-flex items-center px-3 py-1 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 rounded-md transition-colors duration-200"
+          className="inline-flex items-center px-3 py-1 text-sm font-medium text-neutral bg-primary hover:bg-primary-hover disabled:bg-primary rounded-md transition-colors duration-200"
         >
           Cancel
         </button>
@@ -83,7 +83,7 @@ const BorrowButton = ({
     <button
       onClick={handleBorrowClick}
       disabled={isSubmitting || disabled}
-      className="inline-flex items-center px-3 py-1 text-sm font-medium text-blue-600 bg-blue-100 hover:bg-blue-200 disabled:bg-blue-50 disabled:text-blue-400 rounded-md transition-colors duration-200"
+      className="inline-flex items-center px-3 py-1 text-sm font-medium text-secondary bg-primary hover:bg-primary-hover disabled:bg-neutral disabled:text-neutral rounded-md transition-colors duration-200"
     >
       {isSubmitting ? "Borrowing..." : "Borrow"}
     </button>

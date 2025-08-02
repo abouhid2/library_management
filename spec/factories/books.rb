@@ -31,5 +31,13 @@ FactoryBot.define do
       total_copies { 2 }
       available_copies { 1 }
     end
+
+    trait :with_image do
+      image { "https://example.com/book-cover.jpg" }
+    end
+
+    trait :without_image do
+      image { nil }
+    end
   end
 end

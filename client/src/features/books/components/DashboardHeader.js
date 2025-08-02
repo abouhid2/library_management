@@ -9,10 +9,10 @@ const DashboardHeader = ({
   return (
     <div className="flex justify-between items-center">
       <div>
-        <h2 className="text-3xl font-bold text-gray-900">
+        <h2 className="text-3xl font-bold text-secondary">
           {isLibrarian ? "Librarian Dashboard" : "My Dashboard"}
         </h2>
-        <p className="text-gray-600 mt-1">
+        <p className="text-neutral mt-1">
           {isLibrarian
             ? "Monitor library operations and manage borrowings"
             : "Track your borrowed books and due dates"}
@@ -23,8 +23,8 @@ const DashboardHeader = ({
           onClick={onToggleOverdue}
           className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
             showOverdue
-              ? "bg-gray-600 hover:bg-gray-700 text-white"
-              : "bg-yellow-600 hover:bg-yellow-700 text-white"
+              ? "bg-neutral hover:bg-secondary text-primary"
+              : "bg-warning hover:bg-warning/80 text-white"
           }`}
         >
           {showOverdue ? "Show All" : `Show Overdue (${overdueCount})`}

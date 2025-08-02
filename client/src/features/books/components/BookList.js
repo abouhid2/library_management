@@ -1,5 +1,5 @@
 import React from "react";
-import BookTable from "./BookTable";
+import BookGrid from "./BookGrid";
 
 const BookList = ({
   books,
@@ -11,20 +11,12 @@ const BookList = ({
   onReturn,
   borrowings,
   isSubmitting,
+  onSubmitEdit,
+  onCancelEdit,
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900">
-          Book Collection ({books.length} books)
-          {searchQuery && (
-            <span className="text-sm font-normal text-gray-500 ml-2">
-              - Filtered by "{searchQuery}"
-            </span>
-          )}
-        </h3>
-      </div>
-      <BookTable
+    <div className="space-y-6">
+      <BookGrid
         books={books}
         isLibrarian={isLibrarian}
         onEdit={onEdit}
@@ -33,9 +25,11 @@ const BookList = ({
         onReturn={onReturn}
         borrowings={borrowings}
         isSubmitting={isSubmitting}
+        onSubmitEdit={onSubmitEdit}
+        onCancelEdit={onCancelEdit}
       />
     </div>
   );
 };
 
-export default BookList; 
+export default BookList;

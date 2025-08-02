@@ -59,7 +59,7 @@ const BorrowedColumn = ({ borrowings }) => {
         <div className="mt-2">
           <button
             onClick={toggleDropdown}
-            className="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors duration-200"
+            className="inline-flex items-center px-2 py-1 text-xs font-medium text-secondary bg-primary hover:bg-primary-hover rounded-md transition-colors duration-200"
           >
             +{additionalCount}
             <svg

@@ -34,6 +34,25 @@ RSpec.describe Book, type: :model do
     end
   end
 
+  describe 'image functionality' do
+    describe '#image_url' do
+      it 'returns the image URL when image is present' do
+        book = build(:book, image: 'https://example.com/book-cover.jpg')
+        expect(book.image_url).to eq('https://example.com/book-cover.jpg')
+      end
+
+      it 'returns nil when image is not present' do
+        book = build(:book, image: nil)
+        expect(book.image_url).to be_nil
+      end
+
+      it 'returns nil when image is empty string' do
+        book = build(:book, image: '')
+        expect(book.image_url).to be_nil
+      end
+    end
+  end
+
   describe 'scopes' do
     let!(:fiction_book) { create(:book, genre: 'Fiction', title: 'The Great Gatsby') }
     let!(:non_fiction_book) { create(:book, genre: 'Non-Fiction', title: 'Science Book') }

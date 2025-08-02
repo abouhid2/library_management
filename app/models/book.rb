@@ -48,6 +48,13 @@ class Book < ApplicationRecord
     end
   end
 
+  # Image methods
+  def image_url
+    return image if image.present?
+    # Return nil when no image is present - frontend will handle placeholder
+    nil
+  end
+
   # Borrowing methods
   def can_be_borrowed_by?(user)
     return false unless user.member?

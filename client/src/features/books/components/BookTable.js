@@ -105,7 +105,7 @@ const BookTable = ({
                     <>
                       <button
                         onClick={() => onEdit(book)}
-                        className="text-blue-600 hover:text-blue-900 transition-colors duration-200"
+                        className="text-highlight hover:text-secondary transition-colors duration-200"
                       >
                         Edit
                       </button>

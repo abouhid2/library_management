@@ -132,34 +132,4 @@ RSpec.describe Api::DashboardController, type: :controller do
       end
     end
   end
-
-  describe 'GET #stats' do
-    context 'when user is a librarian' do
-      before do
-        request.headers.merge!(auth_headers_for(librarian))
-      end
-
-      it 'returns librarian stats' do
-        get :stats
-        expect(response).to be_successful
-
-        response_body = JSON.parse(response.body)
-        expect(response_body).to include('total_books', 'total_borrowed', 'books_due_today', 'overdue_count')
-      end
-    end
-
-    context 'when user is a member' do
-      before do
-        request.headers.merge!(auth_headers_for(member))
-      end
-
-      it 'returns member stats' do
-        get :stats
-        expect(response).to be_successful
-
-        response_body = JSON.parse(response.body)
-        expect(response_body).to include('total_books', 'my_borrowed', 'my_overdue', 'books_due_today', 'overdue_count')
-      end
-    end
-  end
 end

@@ -1,19 +1,4 @@
 import React, { useState } from "react";
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Paper,
-  Container,
-  Alert,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material";
 import { authAPI } from "../services/api";
 
 const Login = ({ onLogin }) => {
@@ -28,18 +13,16 @@ const Login = ({ onLogin }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleModeChange = (event, newMode) => {
-    if (newMode !== null) {
-      setMode(newMode);
-      setError("");
-      setFormData({
-        email: "",
-        password: "",
-        passwordConfirmation: "",
-        name: "",
-        userType: "member",
-      });
-    }
+  const handleModeChange = (newMode) => {
+    setMode(newMode);
+    setError("");
+    setFormData({
+      email: "",
+      password: "",
+      passwordConfirmation: "",
+      name: "",
+      userType: "member",
+    });
   };
 
   const handleChange = (e) => {
@@ -115,137 +98,152 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Paper elevation={3} sx={{ padding: 4, width: "100%" }}>
-          <Typography component="h1" variant="h4" align="center" gutterBottom>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Library Management System
-          </Typography>
+          </h2>
+        </div>
 
-          <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
-            <ToggleButtonGroup
-              value={mode}
-              exclusive
-              onChange={handleModeChange}
-              aria-label="authentication mode"
+        {/* Mode Toggle */}
+        <div className="flex justify-center">
+          <div className="bg-gray-200 rounded-lg p-1">
+            <button
+              onClick={() => handleModeChange("login")}
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                mode === "login"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
             >
-              <ToggleButton value="login" aria-label="login">
-                Sign In
-              </ToggleButton>
-              <ToggleButton value="register" aria-label="register">
-                Register
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </Box>
+              Sign In
+            </button>
+            <button
+              onClick={() => handleModeChange("register")}
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                mode === "register"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Register
+            </button>
+          </div>
+        </div>
 
+        <div className="bg-white py-8 px-6 shadow rounded-lg">
           {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
+            <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
               {error}
-            </Alert>
+            </div>
           )}
 
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <form className="space-y-6" onSubmit={handleSubmit}>
             {mode === "register" && (
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="name"
-                label="Full Name"
-                name="name"
-                autoComplete="name"
-                autoFocus
-                value={formData.name}
-                onChange={handleChange}
-              />
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                  Full Name
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  value={formData.name}
+                  onChange={handleChange}
+                />
+              </div>
             )}
 
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus={mode === "login"}
-              value={formData.email}
-              onChange={handleChange}
-            />
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email Address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
 
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete={
-                mode === "login" ? "current-password" : "new-password"
-              }
-              value={formData.password}
-              onChange={handleChange}
-            />
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete={mode === "login" ? "current-password" : "new-password"}
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                value={formData.password}
+                onChange={handleChange}
+              />
+            </div>
 
             {mode === "register" && (
               <>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="passwordConfirmation"
-                  label="Confirm Password"
-                  type="password"
-                  id="passwordConfirmation"
-                  autoComplete="new-password"
-                  value={formData.passwordConfirmation}
-                  onChange={handleChange}
-                />
+                <div>
+                  <label htmlFor="passwordConfirmation" className="block text-sm font-medium text-gray-700">
+                    Confirm Password
+                  </label>
+                  <input
+                    id="passwordConfirmation"
+                    name="passwordConfirmation"
+                    type="password"
+                    autoComplete="new-password"
+                    required
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    value={formData.passwordConfirmation}
+                    onChange={handleChange}
+                  />
+                </div>
 
-                <FormControl fullWidth margin="normal">
-                  <InputLabel id="user-type-label">User Type</InputLabel>
-                  <Select
-                    labelId="user-type-label"
+                <div>
+                  <label htmlFor="userType" className="block text-sm font-medium text-gray-700">
+                    User Type
+                  </label>
+                  <select
                     id="userType"
                     name="userType"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     value={formData.userType}
-                    label="User Type"
                     onChange={handleChange}
                   >
-                    <MenuItem value="member">Member</MenuItem>
-                    <MenuItem value="librarian">Librarian</MenuItem>
-                  </Select>
-                </FormControl>
+                    <option value="member">Member</option>
+                    <option value="librarian">Librarian</option>
+                  </select>
+                </div>
               </>
             )}
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={loading}
-            >
-              {loading
-                ? mode === "login"
-                  ? "Signing In..."
-                  : "Creating Account..."
-                : mode === "login"
-                ? "Sign In"
-                : "Sign Up"}
-            </Button>
-          </Box>
-        </Paper>
-      </Box>
-    </Container>
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading
+                  ? mode === "login"
+                    ? "Signing In..."
+                    : "Creating Account..."
+                  : mode === "login"
+                  ? "Sign In"
+                  : "Sign Up"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   );
 };
 

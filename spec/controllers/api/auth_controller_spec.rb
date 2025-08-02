@@ -68,6 +68,42 @@ RSpec.describe Api::AuthController, type: :controller do
     end
   end
 
+  describe 'POST #logout' do
+    context 'when user logs out' do
+      it 'returns success response with logout message' do
+        post :logout
+
+        expect(response).to have_http_status(:ok)
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['success']).to be true
+        expect(json_response['message']).to eq('Successfully logged out')
+      end
+
+      it 'returns success response regardless of authentication state' do
+        # Test logout even when no user is authenticated
+        post :logout
+
+        expect(response).to have_http_status(:ok)
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['success']).to be true
+        expect(json_response['message']).to eq('Successfully logged out')
+      end
+
+      it 'returns consistent response format' do
+        post :logout
+
+        json_response = JSON.parse(response.body)
+
+        expect(json_response).to have_key('success')
+        expect(json_response).to have_key('message')
+        expect(json_response['success']).to be true
+        expect(json_response['message']).to be_a(String)
+      end
+    end
+  end
+
   describe 'POST #register' do
     let(:valid_params) do
       {

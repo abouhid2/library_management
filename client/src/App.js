@@ -1,19 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#1976d2",
-    },
-    secondary: {
-      main: "#dc004e",
-    },
-  },
-});
+import { authAPI } from "./services/api";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -32,23 +20,37 @@ function App() {
     setUser(userData);
   };
 
-  const handleLogout = () => {
-    setUser(null);
+  const handleLogout = async () => {
+    try {
+      // Call the backend logout API
+      await authAPI.logout();
+    } catch (error) {
+      // Even if the API call fails, we should still logout locally
+      console.error("Logout API call failed:", error);
+    } finally {
+      // Clear local storage and update state
+      localStorage.removeItem("user");
+      localStorage.removeItem("authToken");
+      setUser(null);
+    }
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-lg text-gray-600">Loading...</div>
+      </div>
+    );
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <div className="min-h-screen bg-gray-50">
       {user ? (
         <Dashboard user={user} onLogout={handleLogout} />
       ) : (
         <Login onLogin={handleLogin} />
       )}
-    </ThemeProvider>
+    </div>
   );
 }
 

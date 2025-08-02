@@ -35,9 +35,8 @@ class Api::AuthController < ApplicationController
     end
   end
 
-  def me
-    # For now, return a simple response since we're not implementing token-based auth yet
-    render json: { success: false, message: "Not implemented yet" }, status: :not_implemented
+  def logout
+    render json: { success: true, message: "Successfully logged out" }
   end
 
   private

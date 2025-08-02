@@ -28,6 +28,8 @@ export const authAPI = {
 
   register: (userData) => api.post("/auth/register", { user: userData }),
 
+  logout: () => api.post("/auth/logout"),
+
   me: () => api.get("/auth/me"),
 };
 

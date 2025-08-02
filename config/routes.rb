@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   namespace :api do
     post "auth/login", to: "auth#login"
     post "auth/register", to: "auth#register"
-    get "auth/me", to: "auth#me"
+    post "auth/logout", to: "auth#logout"
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

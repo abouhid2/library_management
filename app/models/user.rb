@@ -13,6 +13,9 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: { case_sensitive: false }
   validates :user_type, presence: true, inclusion: { in: %w[member librarian] }
 
+  # Callbacks
+  before_validation :set_default_user_type
+
   # Scopes
   scope :librarians, -> { where(user_type: "librarian") }
   scope :members, -> { where(user_type: "member") }
@@ -74,5 +77,11 @@ class User < ApplicationRecord
     end
 
     Borrowing.active
+  end
+
+  private
+
+  def set_default_user_type
+    self.user_type ||= "member"
   end
 end

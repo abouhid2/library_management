@@ -53,16 +53,16 @@ class Book < ApplicationRecord
   # Image methods
   def image_url
     return nil unless image.attached?
-    host = Rails.application.config.action_mailer.default_url_options[:host] || 'localhost'
+    host = Rails.application.config.action_mailer.default_url_options[:host] || "localhost"
     port = Rails.application.config.action_mailer.default_url_options[:port] || 3001
     Rails.application.routes.url_helpers.rails_blob_url(image, only_path: false, host: "#{host}:#{port}")
   end
 
   def thumbnail_url
     return nil unless image.attached?
-    host = Rails.application.config.action_mailer.default_url_options[:host] || 'localhost'
+    host = Rails.application.config.action_mailer.default_url_options[:host] || "localhost"
     port = Rails.application.config.action_mailer.default_url_options[:port] || 3001
-    Rails.application.routes.url_helpers.rails_blob_url(image.variant(resize_to_limit: [200, 200]), only_path: false, host: "#{host}:#{port}")
+    Rails.application.routes.url_helpers.rails_blob_url(image.variant(resize_to_limit: [ 200, 200 ]), only_path: false, host: "#{host}:#{port}")
   end
 
   # Borrowing methods
@@ -137,7 +137,7 @@ class Book < ApplicationRecord
       errors.add(:image, "is too big (should be less than 5MB)")
     end
 
-    acceptable_types = ["image/jpeg", "image/png", "image/gif", "image/webp"]
+    acceptable_types = [ "image/jpeg", "image/png", "image/gif", "image/webp" ]
     unless acceptable_types.include?(image.blob.content_type)
       errors.add(:image, "must be a JPEG, PNG, GIF, or WebP")
     end

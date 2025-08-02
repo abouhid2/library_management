@@ -85,38 +85,38 @@ RSpec.describe Book, type: :model do
       it 'rejects files that are too large' do
         book = build(:book)
         # Create a large file (simulate > 5MB)
-        large_file = Tempfile.new(['large', '.jpg'])
+        large_file = Tempfile.new([ 'large', '.jpg' ])
         large_file.write('x' * 6.megabytes)
         large_file.rewind
-        
+
         book.image.attach(
           io: large_file,
           filename: 'large_image.jpg',
           content_type: 'image/jpeg'
         )
-        
+
         expect(book).not_to be_valid
         expect(book.errors[:image]).to include('is too big (should be less than 5MB)')
-        
+
         large_file.close
         large_file.unlink
       end
 
       it 'rejects invalid file types' do
         book = build(:book)
-        invalid_file = Tempfile.new(['invalid', '.txt'])
+        invalid_file = Tempfile.new([ 'invalid', '.txt' ])
         invalid_file.write('This is not an image')
         invalid_file.rewind
-        
+
         book.image.attach(
           io: invalid_file,
           filename: 'invalid.txt',
           content_type: 'text/plain'
         )
-        
+
         expect(book).not_to be_valid
         expect(book.errors[:image]).to include('must be a JPEG, PNG, GIF, or WebP')
-        
+
         invalid_file.close
         invalid_file.unlink
       end

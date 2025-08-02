@@ -176,41 +176,41 @@ books_data.each do |book_attrs|
       # Use the bookcover.longitood.com API to get the actual book cover
       require 'net/http'
       require 'json'
-      
+
       # API endpoint for ISBN-based book cover lookup
       api_url = "https://bookcover.longitood.com/bookcover/#{book.isbn}"
-      
+
       uri = URI(api_url)
       response = Net::HTTP.get_response(uri)
-      
+
       if response.is_a?(Net::HTTPSuccess)
         # Parse the JSON response to get the image URL
         data = JSON.parse(response.body)
         image_url = data['url']
-        
+
         if image_url
           # Download the actual book cover image
           image_uri = URI(image_url)
           image_response = Net::HTTP.get_response(image_uri)
-          
+
           if image_response.is_a?(Net::HTTPSuccess)
             # Create a temporary file
             require 'tempfile'
-            temp_file = Tempfile.new(['book_cover', '.jpg'])
+            temp_file = Tempfile.new([ 'book_cover', '.jpg' ])
             temp_file.binmode
             temp_file.write(image_response.body)
             temp_file.rewind
-            
+
             # Attach the image
             book.image.attach(
               io: temp_file,
               filename: "#{book.title.parameterize}.jpg",
               content_type: 'image/jpeg'
             )
-            
+
             temp_file.close
             temp_file.unlink
-            
+
             puts "✓ Attached book cover for: #{book.title} (ISBN: #{book.isbn})"
           else
             puts "⚠ Could not download book cover image for: #{book.title} (HTTP #{image_response.code})"

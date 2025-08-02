@@ -1,31 +1,55 @@
 import React, { useState } from "react";
 import BookForm from "./BookForm";
-import BookTable from "./BookTable";
+import BookHeader from "./BookHeader";
+import BookList from "./BookList";
+import ErrorDisplay from "./ErrorDisplay";
+import Notification from "../../../components/Notification";
 import { useBooks } from "../hooks/useBooks";
+import { useBorrowings } from "../hooks/useBorrowings";
 
 const Books = ({ user, searchQuery = "" }) => {
   const [showForm, setShowForm] = useState(false);
   const [editingBook, setEditingBook] = useState(null);
+  const [notification, setNotification] = useState(null);
 
   const {
     books,
     loading,
     error,
-    isSubmitting,
+    isSubmitting: isBookSubmitting,
     createBook,
     updateBook,
     deleteBook,
     setError,
   } = useBooks(searchQuery);
 
+  const {
+    borrowings,
+    loading: borrowingsLoading,
+    error: borrowingsError,
+    isSubmitting: isBorrowingSubmitting,
+    borrowBook,
+    returnBook,
+  } = useBorrowings();
+
   const isLibrarian = user?.user_type === "librarian";
+
+  const showNotification = (message, type = "success") => {
+    setNotification({ message, type });
+  };
+
+  const hideNotification = () => {
+    setNotification(null);
+  };
 
   const handleSubmit = async (bookData) => {
     try {
       if (editingBook) {
         await updateBook(editingBook.id, bookData);
+        showNotification("Book updated successfully!");
       } else {
         await createBook(bookData);
+        showNotification("Book created successfully!");
       }
       resetForm();
     } catch (err) {
@@ -43,7 +67,32 @@ const Books = ({ user, searchQuery = "" }) => {
     if (!window.confirm("Are you sure you want to delete this book?")) {
       return;
     }
-    await deleteBook(bookId);
+    try {
+      await deleteBook(bookId);
+      showNotification("Book deleted successfully!");
+    } catch (err) {
+      showNotification("Failed to delete book", "error");
+    }
+  };
+
+  const handleBorrow = async (bookId) => {
+    try {
+      await borrowBook(bookId);
+      showNotification("Book borrowed successfully! Due in 2 weeks.");
+    } catch (err) {
+      const errorMessage = err.response?.data?.error || "Failed to borrow book";
+      showNotification(errorMessage, "error");
+    }
+  };
+
+  const handleReturn = async (borrowingId) => {
+    try {
+      await returnBook(borrowingId);
+      showNotification("Book returned successfully!");
+    } catch (err) {
+      const errorMessage = err.response?.data?.error || "Failed to return book";
+      showNotification(errorMessage, "error");
+    }
   };
 
   const resetForm = () => {
@@ -52,7 +101,7 @@ const Books = ({ user, searchQuery = "" }) => {
     setError(null);
   };
 
-  if (loading) {
+  if (loading || borrowingsLoading) {
     return (
       <div className="flex justify-center items-center py-8">
         <div className="text-lg text-gray-600">Loading books...</div>
@@ -62,55 +111,42 @@ const Books = ({ user, searchQuery = "" }) => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-900">Books</h2>
-        {isLibrarian && (
-          <button
-            onClick={() => setShowForm(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-          >
-            Add New Book
-          </button>
-        )}
-      </div>
+      <BookHeader
+        isLibrarian={isLibrarian}
+        onAddBook={() => setShowForm(true)}
+      />
 
-      {/* Error Message */}
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-          {error}
-        </div>
-      )}
+      <ErrorDisplay error={error} />
+      <ErrorDisplay error={borrowingsError} />
 
-      {/* Book Form */}
       {showForm && (
         <BookForm
           onSubmit={handleSubmit}
           onCancel={resetForm}
           editingBook={editingBook}
-          isSubmitting={isSubmitting}
+          isSubmitting={isBookSubmitting}
         />
       )}
 
-      {/* Books List */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Book Collection ({books.length} books)
-            {searchQuery && (
-              <span className="text-sm font-normal text-gray-500 ml-2">
-                - Filtered by "{searchQuery}"
-              </span>
-            )}
-          </h3>
-        </div>
-        <BookTable
-          books={books}
-          isLibrarian={isLibrarian}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
+      <BookList
+        books={books}
+        searchQuery={searchQuery}
+        isLibrarian={isLibrarian}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onBorrow={handleBorrow}
+        onReturn={handleReturn}
+        borrowings={borrowings}
+        isSubmitting={isBorrowingSubmitting}
+      />
+
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={hideNotification}
         />
-      </div>
+      )}
     </div>
   );
 };

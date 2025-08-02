@@ -57,4 +57,18 @@ export const booksAPI = {
   delete: (id) => api.delete(`/books/${id}`),
 };
 
+export const borrowingsAPI = {
+  getAll: () => api.get("/borrowings"),
+
+  getById: (id) => api.get(`/borrowings/${id}`),
+
+  borrowBook: (bookId) => api.post("/borrowings", { book_id: bookId }),
+
+  returnBook: (borrowingId) => api.patch(`/borrowings/${borrowingId}/return`),
+
+  getOverdue: () => api.get("/borrowings/overdue"),
+
+  getMyOverdue: () => api.get("/borrowings/my_overdue"),
+};
+
 export default api;

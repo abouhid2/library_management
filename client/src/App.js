@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Login from "./features/auth/components/Login";
-import Dashboard from "./components/Dashboard";
+import DashboardLayout from "./components/DashboardLayout";
 import { authAPI } from "./services/api";
 
 function App() {
@@ -69,7 +69,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       {user ? (
-        <Dashboard user={user} onLogout={handleLogout} />
+        <DashboardLayout user={user} onLogout={handleLogout} />
       ) : (
         <Login
           onLogin={handleLogin}

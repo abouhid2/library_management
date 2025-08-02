@@ -1,10 +1,15 @@
-class Api::AuthController < ApplicationController
+class Api::AuthController < Api::ApplicationController
+  skip_before_action :authenticate_user!, only: [ :login, :register, :logout ]
+
   def login
     user = User.find_by(email: params[:email])
 
     if user&.valid_password?(params[:password])
+      token = generate_token(user)
+
       render json: {
         success: true,
+        token: token,
         user: {
           id: user.id,
           email: user.email,
@@ -21,8 +26,11 @@ class Api::AuthController < ApplicationController
     user = User.new(user_params)
 
     if user.save
+      token = generate_token(user)
+
       render json: {
         success: true,
+        token: token,
         user: {
           id: user.id,
           email: user.email,
@@ -35,12 +43,33 @@ class Api::AuthController < ApplicationController
     end
   end
 
+  def logout
+    # With JWT, logout is handled client-side by removing the token
+    render json: { success: true, message: "Successfully logged out" }
+  end
+
   def me
-    # For now, return a simple response since we're not implementing token-based auth yet
-    render json: { success: false, message: "Not implemented yet" }, status: :not_implemented
+    if current_user
+      render json: {
+        success: true,
+        user: {
+          id: current_user.id,
+          email: current_user.email,
+          name: current_user.name,
+          user_type: current_user.user_type
+        }
+      }
+    else
+      render json: { success: false, message: "Not authenticated" }, status: :unauthorized
+    end
   end
 
   private
+
+  def generate_token(user)
+    payload = { user_id: user.id, exp: 24.hours.from_now.to_i }
+    JWT.encode(payload, Rails.application.credentials.secret_key_base, "HS256")
+  end
 
   def user_params
     params.require(:user).permit(:email, :password, :password_confirmation, :name, :user_type)

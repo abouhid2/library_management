@@ -4,12 +4,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  # Enums
-  enum :user_type, { member: "member", librarian: "librarian" }
-
   # Validations
   validates :name, presence: true
-  validates :email, presence: true, uniqueness: true
+  validates :email, presence: true, uniqueness: { case_sensitive: false }
   validates :user_type, presence: true, inclusion: { in: %w[member librarian] }
 
   # Scopes

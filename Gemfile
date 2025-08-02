@@ -2,6 +2,9 @@ source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.2"
+
+gem "erb", "~> 4.0.3"
+gem "cgi", "~> 0.4.2"
 # Use sqlite3 as the database for Active Record
 gem "sqlite3", "~> 2.0"
 # Use the Puma web server [https://github.com/puma/puma]
@@ -62,4 +65,7 @@ group :development, :test do
 
   # Use FactoryBot for test data
   gem "factory_bot_rails"
+
+  # Use shoulda-matchers for validation testing
+  gem "shoulda-matchers"
 end

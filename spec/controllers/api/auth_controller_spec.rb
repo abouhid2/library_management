@@ -68,6 +68,42 @@ RSpec.describe Api::AuthController, type: :controller do
     end
   end
 
+  describe 'POST #logout' do
+    context 'when user logs out' do
+      it 'returns success response with logout message' do
+        post :logout
+
+        expect(response).to have_http_status(:ok)
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['success']).to be true
+        expect(json_response['message']).to eq('Successfully logged out')
+      end
+
+      it 'returns success response regardless of authentication state' do
+        # Test logout even when no user is authenticated
+        post :logout
+
+        expect(response).to have_http_status(:ok)
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['success']).to be true
+        expect(json_response['message']).to eq('Successfully logged out')
+      end
+
+      it 'returns consistent response format' do
+        post :logout
+
+        json_response = JSON.parse(response.body)
+
+        expect(json_response).to have_key('success')
+        expect(json_response).to have_key('message')
+        expect(json_response['success']).to be true
+        expect(json_response['message']).to be_a(String)
+      end
+    end
+  end
+
   describe 'POST #register' do
     let(:valid_params) do
       {
@@ -156,13 +192,17 @@ RSpec.describe Api::AuthController, type: :controller do
         expect(json_response['errors']).to include("Password confirmation doesn't match Password")
       end
 
-      it 'raises ArgumentError for invalid user_type' do
+      it 'returns error for invalid user_type' do
         invalid_type_params = valid_params.deep_dup
         invalid_type_params[:user][:user_type] = 'invalid_type'
 
-        expect {
-          post :register, params: invalid_type_params
-        }.to raise_error(ArgumentError, "'invalid_type' is not a valid user_type")
+        post :register, params: invalid_type_params
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['success']).to be false
+        expect(json_response['errors']).to include('User type is not included in the list')
       end
 
       it 'returns error for missing name' do

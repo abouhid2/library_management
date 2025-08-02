@@ -341,7 +341,7 @@ RSpec.describe 'Api::Users', type: :request do
 
       post '/api/auth/register', params: register_params
       expect(response).to have_http_status(:created)
-      
+
       register_response = JSON.parse(response.body)
       expect(register_response['success']).to be true
       expect(register_response['token']).to be_present
@@ -349,7 +349,7 @@ RSpec.describe 'Api::Users', type: :request do
       # Step 2: Login with the same credentials
       post '/api/auth/login', params: { email: register_params[:user][:email], password: register_params[:user][:password] }
       expect(response).to have_http_status(:ok)
-      
+
       login_response = JSON.parse(response.body)
       expect(login_response['success']).to be true
       expect(login_response['token']).to be_present
@@ -358,7 +358,7 @@ RSpec.describe 'Api::Users', type: :request do
       token = login_response['token']
       get '/api/auth/me', headers: { 'Authorization' => "Bearer #{token}" }
       expect(response).to have_http_status(:ok)
-      
+
       me_response = JSON.parse(response.body)
       expect(me_response['success']).to be true
       expect(me_response['user']['email']).to eq(register_params[:user][:email])
@@ -368,4 +368,4 @@ RSpec.describe 'Api::Users', type: :request do
       expect(response).to have_http_status(:ok)
     end
   end
-end 
+end

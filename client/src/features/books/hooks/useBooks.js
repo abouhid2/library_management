@@ -71,5 +71,6 @@ export const useBooks = (searchQuery = "") => {
     updateBook,
     deleteBook,
     setError,
+    refreshBooks: () => fetchBooks({ search: searchQuery }),
   };
 };

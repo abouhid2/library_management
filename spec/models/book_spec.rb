@@ -135,6 +135,26 @@ RSpec.describe Book, type: :model do
         expect { book.return_copy }.to raise_error(StandardError, 'Cannot return more copies than total')
       end
     end
+
+    describe '#can_be_deleted?' do
+      let(:book) { create(:book) }
+      let(:member) { create(:user, :member) }
+
+      it 'returns true when book has no active borrowings' do
+        expect(book.can_be_deleted?).to be true
+      end
+
+      it 'returns false when book has active borrowings' do
+        create(:borrowing, user: member, book: book)
+        expect(book.can_be_deleted?).to be false
+      end
+
+      it 'returns true when book has only returned borrowings' do
+        borrowing = create(:borrowing, user: member, book: book)
+        borrowing.update(returned_at: Time.current)
+        expect(book.can_be_deleted?).to be true
+      end
+    end
   end
 
   describe 'callbacks' do

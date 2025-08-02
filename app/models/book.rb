@@ -68,6 +68,10 @@ class Book < ApplicationRecord
     borrowings.overdue
   end
 
+  def can_be_deleted?
+    !borrowings.active.exists?
+  end
+
   def borrow_for_user(user)
     unless user.member?
       raise StandardError, "Only members can borrow books"

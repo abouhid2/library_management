@@ -50,6 +50,12 @@ class Api::BooksController < Api::ApplicationController
 
   # DELETE /api/books/:id
   def destroy
+    # Check if book has active borrowings
+    unless @book.can_be_deleted?
+      render json: { error: "Cannot delete book: It is currently borrowed" }, status: :unprocessable_entity
+      return
+    end
+
     @book.destroy
     head :no_content
   end

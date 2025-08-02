@@ -272,6 +272,33 @@ RSpec.describe Api::BooksController, type: :controller do
         delete :destroy, params: { id: 99999 }
         expect(response).to have_http_status(:not_found)
       end
+
+      it 'prevents deletion of book with active borrowings' do
+        member = create(:user, :member)
+        create(:borrowing, user: member, book: book_to_delete)
+
+        delete :destroy, params: { id: book_to_delete.id }
+        expect(response).to have_http_status(:unprocessable_entity)
+        
+        response_body = JSON.parse(response.body)
+        expect(response_body['error']).to eq('Cannot delete book: It is currently borrowed')
+      end
+
+      it 'allows deletion of book with no active borrowings' do
+        expect {
+          delete :destroy, params: { id: book_to_delete.id }
+        }.to change(Book, :count).by(-1)
+      end
+
+      it 'allows deletion of book with only returned borrowings' do
+        member = create(:user, :member)
+        borrowing = create(:borrowing, user: member, book: book_to_delete)
+        borrowing.update(returned_at: Time.current)
+
+        expect {
+          delete :destroy, params: { id: book_to_delete.id }
+        }.to change(Book, :count).by(-1)
+      end
     end
 
     context 'when user is a member' do

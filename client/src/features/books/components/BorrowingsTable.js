@@ -44,6 +44,9 @@ const BorrowingsTable = ({
               Book
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Borrowed By
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Borrowed Date
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -70,11 +73,14 @@ const BorrowingsTable = ({
                   <div className="text-sm text-gray-500">
                     by {borrowing.book?.author || "Unknown Author"}
                   </div>
-                  {isLibrarian && (
-                    <div className="text-xs text-gray-400">
-                      Borrowed by: {borrowing.user?.name || "Unknown User"}
-                    </div>
-                  )}
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-sm font-medium text-gray-900">
+                  {borrowing.user?.name || "Unknown User"}
+                </div>
+                <div className="text-xs text-gray-500">
+                  {borrowing.user?.email || "No email"}
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

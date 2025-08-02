@@ -172,7 +172,6 @@ npm start
 
 - `GET /api/dashboard/librarian` - Librarian dashboard statistics
 - `GET /api/dashboard/member` - Member dashboard statistics
-- `GET /api/dashboard/stats` - General dashboard statistics
 
 ## Testing
 

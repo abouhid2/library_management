@@ -167,47 +167,6 @@ RSpec.describe 'Dashboard API', type: :request do
     end
   end
 
-  describe 'GET /api/dashboard/stats' do
-    context 'when authenticated as librarian' do
-      before do
-        @auth_headers = auth_headers_for(librarian)
-      end
-
-      it 'returns librarian stats' do
-        get '/api/dashboard/stats', headers: @auth_headers
-
-        expect(response).to have_http_status(:ok)
-
-        json_response = JSON.parse(response.body)
-        expect(json_response).to include('total_books', 'total_borrowed', 'books_due_today', 'overdue_count')
-        expect(json_response).not_to include('my_borrowed', 'my_overdue')
-      end
-    end
-
-    context 'when authenticated as member' do
-      before do
-        @auth_headers = auth_headers_for(member)
-      end
-
-      it 'returns member stats' do
-        get '/api/dashboard/stats', headers: @auth_headers
-
-        expect(response).to have_http_status(:ok)
-
-        json_response = JSON.parse(response.body)
-        expect(json_response).to include('total_books', 'my_borrowed', 'my_overdue', 'books_due_today', 'overdue_count')
-        expect(json_response).not_to include('total_borrowed')
-      end
-    end
-
-    context 'when not authenticated' do
-      it 'returns unauthorized status' do
-        get '/api/dashboard/stats'
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-  end
-
   describe 'Dashboard data accuracy' do
     before do
       @librarian_headers = auth_headers_for(librarian)

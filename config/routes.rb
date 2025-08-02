@@ -23,7 +23,6 @@ Rails.application.routes.draw do
     namespace :dashboard do
       get :librarian
       get :member
-      get :stats
     end
   end
 

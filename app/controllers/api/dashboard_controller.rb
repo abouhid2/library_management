@@ -29,13 +29,4 @@ class Api::DashboardController < Api::ApplicationController
 
     render json: stats
   end
-
-  # GET /api/dashboard/stats
-  def stats
-    if current_user.librarian?
-      librarian
-    else
-      member
-    end
-  end
 end

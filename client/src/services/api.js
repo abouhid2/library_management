@@ -74,7 +74,6 @@ export const borrowingsAPI = {
 export const dashboardAPI = {
   getLibrarianStats: () => api.get("/dashboard/librarian"),
   getMemberStats: () => api.get("/dashboard/member"),
-  getStats: () => api.get("/dashboard/stats"),
 };
 
 export default api;

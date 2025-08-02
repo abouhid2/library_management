@@ -26,7 +26,7 @@ RSpec.describe 'Dashboard API', type: :request do
         get '/api/dashboard/librarian', headers: @auth_headers
 
         expect(response).to have_http_status(:ok)
-        
+
         json_response = JSON.parse(response.body)
         expect(json_response['total_books']).to eq(2)
         expect(json_response['total_borrowed']).to eq(4)
@@ -40,7 +40,7 @@ RSpec.describe 'Dashboard API', type: :request do
         get '/api/dashboard/librarian', headers: @auth_headers
 
         expect(response).to have_http_status(:ok)
-        
+
         json_response = JSON.parse(response.body)
         expect(json_response['total_books']).to eq(0)
         expect(json_response['total_borrowed']).to eq(0)
@@ -55,10 +55,10 @@ RSpec.describe 'Dashboard API', type: :request do
         get '/api/dashboard/librarian', headers: @auth_headers
 
         expect(response).to have_http_status(:ok)
-        
+
         json_response = JSON.parse(response.body)
         overdue_borrowings = json_response['overdue_borrowings']
-        
+
         expect(overdue_borrowings.size).to eq(1)
         expect(overdue_borrowings.first['id']).to eq(overdue_borrowing.id)
         expect(overdue_borrowings.first['book']).to include('id', 'title', 'author')
@@ -104,7 +104,7 @@ RSpec.describe 'Dashboard API', type: :request do
         get '/api/dashboard/member', headers: @auth_headers
 
         expect(response).to have_http_status(:ok)
-        
+
         json_response = JSON.parse(response.body)
         expect(json_response['total_books']).to eq(2)
         expect(json_response['my_borrowed']).to eq(3)
@@ -121,7 +121,7 @@ RSpec.describe 'Dashboard API', type: :request do
         get '/api/dashboard/member', headers: @auth_headers
 
         expect(response).to have_http_status(:ok)
-        
+
         json_response = JSON.parse(response.body)
         expect(json_response['total_books']).to eq(0)
         expect(json_response['my_borrowed']).to eq(0)
@@ -138,10 +138,10 @@ RSpec.describe 'Dashboard API', type: :request do
         get '/api/dashboard/member', headers: @auth_headers
 
         expect(response).to have_http_status(:ok)
-        
+
         json_response = JSON.parse(response.body)
         my_borrowings = json_response['my_borrowings']
-        
+
         expect(my_borrowings.size).to eq(1)
         expect(my_borrowings.first['id']).to eq(borrowing.id)
         expect(my_borrowings.first['book']).to include('id', 'title', 'author', 'genre', 'isbn')
@@ -177,7 +177,7 @@ RSpec.describe 'Dashboard API', type: :request do
         get '/api/dashboard/stats', headers: @auth_headers
 
         expect(response).to have_http_status(:ok)
-        
+
         json_response = JSON.parse(response.body)
         expect(json_response).to include('total_books', 'total_borrowed', 'books_due_today', 'overdue_count')
         expect(json_response).not_to include('my_borrowed', 'my_overdue')
@@ -193,7 +193,7 @@ RSpec.describe 'Dashboard API', type: :request do
         get '/api/dashboard/stats', headers: @auth_headers
 
         expect(response).to have_http_status(:ok)
-        
+
         json_response = JSON.parse(response.body)
         expect(json_response).to include('total_books', 'my_borrowed', 'my_overdue', 'books_due_today', 'overdue_count')
         expect(json_response).not_to include('total_borrowed')
@@ -251,4 +251,4 @@ RSpec.describe 'Dashboard API', type: :request do
       expect(json_response['overdue_count']).to eq(1)
     end
   end
-end 
+end

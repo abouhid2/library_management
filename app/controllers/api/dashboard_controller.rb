@@ -1,6 +1,6 @@
 class Api::DashboardController < Api::ApplicationController
-  before_action :require_librarian, only: [:librarian]
-  before_action :require_member, only: [:member]
+  before_action :require_librarian, only: [ :librarian ]
+  before_action :require_member, only: [ :member ]
 
   # GET /api/dashboard/librarian
   def librarian
@@ -9,9 +9,9 @@ class Api::DashboardController < Api::ApplicationController
       total_borrowed: Book.sum(:total_copies) - Book.sum(:available_copies),
       books_due_today: Borrowing.due_today.count,
       overdue_count: Borrowing.overdue.count,
-      overdue_borrowings: Borrowing.overdue.includes(:user, :book).as_json(include: [:user, :book])
+      overdue_borrowings: Borrowing.overdue.includes(:user, :book).as_json(include: [ :user, :book ])
     }
-    
+
     render json: stats
   end
 
@@ -26,7 +26,7 @@ class Api::DashboardController < Api::ApplicationController
       my_borrowings: current_user.borrowings.active.includes(:book).as_json(include: :book),
       my_overdue_borrowings: current_user.overdue_borrowings.includes(:book).as_json(include: :book)
     }
-    
+
     render json: stats
   end
 
@@ -38,4 +38,4 @@ class Api::DashboardController < Api::ApplicationController
       member
     end
   end
-end 
+end

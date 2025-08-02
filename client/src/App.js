@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Login from "./features/auth/components/Login";
 import DashboardLayout from "./components/DashboardLayout";
+import LoadingSpinner from "./components/common/LoadingSpinner";
 import { authAPI } from "./services/api";
 
 function App() {
@@ -60,23 +61,11 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-primary">
-        <div className="text-center">
-          <div className="mb-4">
-            <img
-              src="/b2g_logo.png"
-              alt="Books 2 Go"
-              className="w-24 h-24 mx-auto mb-4"
-            />
-          </div>
-          <div className="text-lg text-secondary font-medium">
-            Loading Books 2 Go...
-          </div>
-          <div className="mt-2 text-accent text-sm">
-            Your library management system
-          </div>
-        </div>
-      </div>
+      <LoadingSpinner
+        message="Loading Books 2 Go..."
+        subtitle="Your library management system"
+        fullScreen={true}
+      />
     );
   }
 

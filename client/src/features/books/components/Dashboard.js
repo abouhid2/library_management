@@ -4,6 +4,7 @@ import DashboardStats from "./DashboardStats";
 import BorrowingsList from "./BorrowingsList";
 import ErrorDisplay from "./form/ErrorDisplay";
 import Notification from "../../../components/Notification";
+import LoadingSpinner from "../../../components/common/LoadingSpinner";
 import { useBorrowings } from "../hooks/useBorrowings";
 import { useDashboard } from "../hooks/useDashboard";
 
@@ -86,11 +87,7 @@ const Dashboard = ({ user }) => {
   }, [isLibrarian, getOverdue]);
 
   if (borrowingsLoading || statsLoading) {
-    return (
-      <div className="flex justify-center items-center py-8">
-        <div className="text-lg text-gray-600">Loading dashboard...</div>
-      </div>
-    );
+    return <LoadingSpinner message="Loading dashboard..." />;
   }
 
   const activeBorrowings = borrowings.filter(

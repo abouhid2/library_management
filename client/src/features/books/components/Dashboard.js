@@ -73,9 +73,17 @@ const Dashboard = ({ user }) => {
   // Load overdue borrowings on mount for librarians
   useEffect(() => {
     if (isLibrarian) {
-      loadOverdueBorrowings();
+      const loadInitialOverdue = async () => {
+        try {
+          const overdue = await getOverdue();
+          setOverdueBorrowings(overdue);
+        } catch (err) {
+          console.error("Failed to load overdue borrowings:", err);
+        }
+      };
+      loadInitialOverdue();
     }
-  }, [isLibrarian, loadOverdueBorrowings]);
+  }, [isLibrarian, getOverdue]);
 
   if (borrowingsLoading || statsLoading) {
     return (

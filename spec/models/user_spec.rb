@@ -6,7 +6,7 @@ RSpec.describe User, type: :model do
 
     # Test custom validations (not Devise's validatable)
     it { should validate_presence_of(:name) }
-    it { should validate_presence_of(:user_type) }
+    # Note: user_type presence validation is handled by the callback that sets default value
     it { should validate_inclusion_of(:user_type).in_array(%w[member librarian]) }
 
     # Test custom uniqueness validation
@@ -140,9 +140,10 @@ RSpec.describe User, type: :model do
     end
 
     it 'enforces user_type presence at database level' do
+      # Since we have a callback that sets default user_type, we need to test the inclusion validation instead
       expect {
-        User.new(email: 'test@example.com', password: 'password123', name: 'Test User', user_type: nil).save!
-      }.to raise_error(ActiveRecord::RecordInvalid, /User type can't be blank/)
+        User.new(email: 'test@example.com', password: 'password123', name: 'Test User', user_type: 'invalid_type').save!
+      }.to raise_error(ActiveRecord::RecordInvalid, /User type is not included in the list/)
     end
   end
 

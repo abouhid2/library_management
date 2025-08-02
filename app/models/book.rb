@@ -1,4 +1,8 @@
 class Book < ApplicationRecord
+  # Associations
+  has_many :borrowings, dependent: :destroy
+  has_many :borrowers, through: :borrowings, source: :user
+
   # Validations
   validates :title, presence: true
   validates :author, presence: true
@@ -41,6 +45,46 @@ class Book < ApplicationRecord
       update(available_copies: available_copies + 1)
     else
       raise StandardError, "Cannot return more copies than total"
+    end
+  end
+
+  # Borrowing methods
+  def can_be_borrowed_by?(user)
+    return false unless user.member?
+    return false unless available?
+    return false if borrowed_by?(user)
+    true
+  end
+
+  def active_borrowings
+    borrowings.active
+  end
+
+  def borrowed_by?(user)
+    borrowings.active.exists?(user: user)
+  end
+
+  def overdue_borrowings
+    borrowings.overdue
+  end
+
+  def borrow_for_user(user)
+    unless user.member?
+      raise StandardError, "Only members can borrow books"
+    end
+
+    unless available?
+      raise StandardError, "Book is not available"
+    end
+
+    if borrowed_by?(user)
+      raise StandardError, "User has already borrowed this book"
+    end
+
+    transaction do
+      borrowing = borrowings.create!(user: user)
+      borrow_copy
+      borrowing
     end
   end
 

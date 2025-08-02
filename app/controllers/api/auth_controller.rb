@@ -2,7 +2,8 @@ class Api::AuthController < Api::ApplicationController
   skip_before_action :authenticate_user!, only: [ :login, :register, :logout ]
 
   def login
-    user = User.find_by(email: params[:email])
+    email = params[:email]&.strip&.downcase
+    user = User.find_by("LOWER(email) = ?", email) if email.present?
 
     if user&.valid_password?(params[:password])
       token = generate_token(user)

@@ -17,8 +17,6 @@
 - Users can register with email, password, name, and user type (Librarian/Member)
 - Users can log in with their credentials
 - Users can log out securely
-- Session management is properly handled
-- Only Librarian users can access book management features (add, edit, delete)
 
 **API Endpoints:**
 - POST /api/auth/register

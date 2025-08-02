@@ -118,16 +118,112 @@ books_data = [
     isbn: "978-0060850524",
     total_copies: 3,
     available_copies: 0
+  },
+  {
+    title: "The Lord of the Rings",
+    author: "J.R.R. Tolkien",
+    genre: "Fantasy",
+    isbn: "978-0547928210",
+    total_copies: 8,
+    available_copies: 5
+  },
+  {
+    title: "The Hunger Games",
+    author: "Suzanne Collins",
+    genre: "Young Adult Dystopian",
+    isbn: "978-0439023481",
+    total_copies: 6,
+    available_copies: 3
+  },
+  {
+    title: "The Da Vinci Code",
+    author: "Dan Brown",
+    genre: "Mystery Thriller",
+    isbn: "978-0307474278",
+    total_copies: 5,
+    available_copies: 4
+  },
+  {
+    title: "The Kite Runner",
+    author: "Khaled Hosseini",
+    genre: "Historical Fiction",
+    isbn: "978-1594631931",
+    total_copies: 4,
+    available_copies: 2
+  },
+  {
+    title: "The Book Thief",
+    author: "Markus Zusak",
+    genre: "Historical Fiction",
+    isbn: "978-0375842207",
+    total_copies: 5,
+    available_copies: 5
   }
 ]
 
 books_data.each do |book_attrs|
-  Book.find_or_create_by!(isbn: book_attrs[:isbn]) do |book|
-    book.title = book_attrs[:title]
-    book.author = book_attrs[:author]
-    book.genre = book_attrs[:genre]
-    book.total_copies = book_attrs[:total_copies]
-    book.available_copies = book_attrs[:available_copies]
+  book = Book.find_or_create_by!(isbn: book_attrs[:isbn]) do |b|
+    b.title = book_attrs[:title]
+    b.author = book_attrs[:author]
+    b.genre = book_attrs[:genre]
+    b.total_copies = book_attrs[:total_copies]
+    b.available_copies = book_attrs[:available_copies]
+  end
+
+  # Attach image if not already attached
+  if !book.image.attached?
+    begin
+      # Use the bookcover.longitood.com API to get the actual book cover
+      require 'net/http'
+      require 'json'
+      
+      # API endpoint for ISBN-based book cover lookup
+      api_url = "https://bookcover.longitood.com/bookcover/#{book.isbn}"
+      
+      uri = URI(api_url)
+      response = Net::HTTP.get_response(uri)
+      
+      if response.is_a?(Net::HTTPSuccess)
+        # Parse the JSON response to get the image URL
+        data = JSON.parse(response.body)
+        image_url = data['url']
+        
+        if image_url
+          # Download the actual book cover image
+          image_uri = URI(image_url)
+          image_response = Net::HTTP.get_response(image_uri)
+          
+          if image_response.is_a?(Net::HTTPSuccess)
+            # Create a temporary file
+            require 'tempfile'
+            temp_file = Tempfile.new(['book_cover', '.jpg'])
+            temp_file.binmode
+            temp_file.write(image_response.body)
+            temp_file.rewind
+            
+            # Attach the image
+            book.image.attach(
+              io: temp_file,
+              filename: "#{book.title.parameterize}.jpg",
+              content_type: 'image/jpeg'
+            )
+            
+            temp_file.close
+            temp_file.unlink
+            
+            puts "✓ Attached book cover for: #{book.title} (ISBN: #{book.isbn})"
+          else
+            puts "⚠ Could not download book cover image for: #{book.title} (HTTP #{image_response.code})"
+          end
+        else
+          puts "⚠ No image URL found in API response for: #{book.title}"
+        end
+      else
+        puts "⚠ Could not fetch book cover from API for: #{book.title} (HTTP #{response.code})"
+      end
+    rescue => e
+      puts "⚠ Error attaching book cover for #{book.title}: #{e.message}"
+    end
   end
 end
 

@@ -54,16 +54,19 @@ const BookCard = ({
             onError={(e) => {
               // Hide the image and show the placeholder div instead
               e.target.style.display = "none";
-              e.target.nextSibling.style.display = "flex";
+              const placeholder =
+                e.target.parentElement.querySelector(".book-placeholder");
+              if (placeholder) {
+                placeholder.style.display = "flex";
+              }
             }}
           />
         ) : null}
         {/* CSS-based placeholder */}
         <div
-          className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600 text-center p-4 ${
+          className={`book-placeholder w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 text-gray-600 text-center p-4 ${
             book.image_url ? "hidden" : "flex"
           }`}
-          style={{ display: book.image_url ? "none" : "flex" }}
         >
           <div>
             <div className="text-4xl mb-2">📚</div>

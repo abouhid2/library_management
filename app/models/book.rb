@@ -53,12 +53,16 @@ class Book < ApplicationRecord
   # Image methods
   def image_url
     return nil unless image.attached?
-    Rails.application.routes.url_helpers.rails_blob_url(image, only_path: false, host: Rails.application.config.action_mailer.default_url_options[:host] || 'localhost:3000')
+    host = Rails.application.config.action_mailer.default_url_options[:host] || 'localhost'
+    port = Rails.application.config.action_mailer.default_url_options[:port] || 3001
+    Rails.application.routes.url_helpers.rails_blob_url(image, only_path: false, host: "#{host}:#{port}")
   end
 
   def thumbnail_url
     return nil unless image.attached?
-    Rails.application.routes.url_helpers.rails_blob_url(image.variant(resize_to_limit: [200, 200]), only_path: false, host: Rails.application.config.action_mailer.default_url_options[:host] || 'localhost:3000')
+    host = Rails.application.config.action_mailer.default_url_options[:host] || 'localhost'
+    port = Rails.application.config.action_mailer.default_url_options[:port] || 3001
+    Rails.application.routes.url_helpers.rails_blob_url(image.variant(resize_to_limit: [200, 200]), only_path: false, host: "#{host}:#{port}")
   end
 
   # Borrowing methods

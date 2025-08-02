@@ -23,7 +23,7 @@ const NavigationTabs = ({ activeTab, onTabChange, isLibrarian }) => {
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
-            {isLibrarian ? "All Borrowings" : "My Borrowings"}
+            Dashboard
           </button>
         </nav>
       </div>
@@ -31,4 +31,4 @@ const NavigationTabs = ({ activeTab, onTabChange, isLibrarian }) => {
   );
 };
 
-export default NavigationTabs; 
+export default NavigationTabs;

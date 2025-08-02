@@ -53,4 +53,10 @@ class Api::ApplicationController < ApplicationController
       render json: { error: "Access denied. Librarian privileges required." }, status: :forbidden
     end
   end
+
+  def require_member
+    unless current_user.member?
+      render json: { error: "Access denied. Member privileges required." }, status: :forbidden
+    end
+  end
 end

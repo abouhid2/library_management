@@ -71,4 +71,9 @@ export const borrowingsAPI = {
   getMyOverdue: () => api.get("/borrowings/my_overdue"),
 };
 
+export const dashboardAPI = {
+  getLibrarianStats: () => api.get("/dashboard/librarian"),
+  getMemberStats: () => api.get("/dashboard/member"),
+};
+
 export default api;

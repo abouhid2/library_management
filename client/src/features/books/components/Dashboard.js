@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useCallback } from "react";
-import BorrowingsHeader from "./BorrowingsHeader";
+import DashboardHeader from "./DashboardHeader";
+import DashboardStats from "./DashboardStats";
 import BorrowingsList from "./BorrowingsList";
-import BorrowingsSummary from "./BorrowingsSummary";
 import ErrorDisplay from "./ErrorDisplay";
 import Notification from "../../../components/Notification";
 import { useBorrowings } from "../hooks/useBorrowings";
+import { useDashboard } from "../hooks/useDashboard";
 
-const Borrowings = ({ user }) => {
+const Dashboard = ({ user }) => {
   const [overdueBorrowings, setOverdueBorrowings] = useState([]);
   const [showOverdue, setShowOverdue] = useState(false);
   const [notification, setNotification] = useState(null);
 
   const {
     borrowings,
-    loading,
-    error,
+    loading: borrowingsLoading,
+    error: borrowingsError,
     isSubmitting,
     returnBook,
     getMyOverdue,
@@ -22,6 +23,12 @@ const Borrowings = ({ user }) => {
   } = useBorrowings();
 
   const isLibrarian = user?.user_type === "librarian";
+  const {
+    stats: dashboardStats,
+    loading: statsLoading,
+    error: statsError,
+    refreshStats,
+  } = useDashboard(isLibrarian);
 
   const showNotification = (message, type = "success") => {
     setNotification({ message, type });
@@ -48,6 +55,8 @@ const Borrowings = ({ user }) => {
       if (showOverdue) {
         await loadOverdueBorrowings();
       }
+      // Refresh dashboard stats
+      await refreshStats();
     } catch (err) {
       const errorMessage = err.response?.data?.error || "Failed to return book";
       showNotification(errorMessage, "error");
@@ -64,14 +73,22 @@ const Borrowings = ({ user }) => {
   // Load overdue borrowings on mount for librarians
   useEffect(() => {
     if (isLibrarian) {
-      loadOverdueBorrowings();
+      const loadInitialOverdue = async () => {
+        try {
+          const overdue = await getOverdue();
+          setOverdueBorrowings(overdue);
+        } catch (err) {
+          console.error("Failed to load overdue borrowings:", err);
+        }
+      };
+      loadInitialOverdue();
     }
-  }, [isLibrarian, loadOverdueBorrowings]);
+  }, [isLibrarian, getOverdue]);
 
-  if (loading) {
+  if (borrowingsLoading || statsLoading) {
     return (
       <div className="flex justify-center items-center py-8">
-        <div className="text-lg text-gray-600">Loading borrowings...</div>
+        <div className="text-lg text-gray-600">Loading dashboard...</div>
       </div>
     );
   }
@@ -79,18 +96,19 @@ const Borrowings = ({ user }) => {
   const activeBorrowings = borrowings.filter(
     (borrowing) => !borrowing.returned_at
   );
-  const overdueCount = overdueBorrowings.length;
 
   return (
     <div className="space-y-6">
-      <BorrowingsHeader
+      <DashboardHeader
         isLibrarian={isLibrarian}
-        overdueCount={overdueCount}
+        overdueCount={dashboardStats.overdue_count || 0}
         showOverdue={showOverdue}
         onToggleOverdue={toggleOverdueView}
       />
 
-      <ErrorDisplay error={error} />
+      <DashboardStats stats={dashboardStats} isLibrarian={isLibrarian} />
+
+      <ErrorDisplay error={borrowingsError || statsError} />
 
       <BorrowingsList
         borrowings={showOverdue ? overdueBorrowings : activeBorrowings}
@@ -98,16 +116,9 @@ const Borrowings = ({ user }) => {
         onReturn={handleReturn}
         isSubmitting={isSubmitting}
         showOverdue={showOverdue}
-        overdueCount={overdueCount}
+        overdueCount={dashboardStats.overdue_count || 0}
         activeBorrowingsCount={activeBorrowings.length}
       />
-
-      {!isLibrarian && (
-        <BorrowingsSummary
-          activeBorrowingsCount={activeBorrowings.length}
-          overdueCount={overdueCount}
-        />
-      )}
 
       {notification && (
         <Notification
@@ -120,4 +131,4 @@ const Borrowings = ({ user }) => {
   );
 };
 
-export default Borrowings;
+export default Dashboard;

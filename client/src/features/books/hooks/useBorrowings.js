@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { borrowingsAPI } from "../../../services/api";
 
 export const useBorrowings = () => {
@@ -51,7 +51,7 @@ export const useBorrowings = () => {
     }
   };
 
-  const getMyOverdue = async () => {
+  const getMyOverdue = useCallback(async () => {
     try {
       const response = await borrowingsAPI.getMyOverdue();
       return response.data;
@@ -59,9 +59,9 @@ export const useBorrowings = () => {
       console.error("Error fetching overdue borrowings:", err);
       return [];
     }
-  };
+  }, []);
 
-  const getOverdue = async () => {
+  const getOverdue = useCallback(async () => {
     try {
       const response = await borrowingsAPI.getOverdue();
       return response.data;
@@ -69,7 +69,7 @@ export const useBorrowings = () => {
       console.error("Error fetching overdue borrowings:", err);
       return [];
     }
-  };
+  }, []);
 
   // Check if user has borrowed a specific book
   const hasBorrowedBook = (bookId) => {

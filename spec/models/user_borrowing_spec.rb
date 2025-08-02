@@ -77,6 +77,18 @@ RSpec.describe User, type: :model do
         expect(member.overdue_borrowings).not_to include(current_borrowing)
       end
     end
+
+    describe '#borrowings.due_today' do
+      let!(:due_today_borrowing) { create(:borrowing, user: member, book: book, due_at: Date.current) }
+      let!(:due_tomorrow_borrowing) { create(:borrowing, user: member, book: create(:book), due_at: Date.current + 1.day) }
+      let!(:returned_due_today_borrowing) { create(:borrowing, user: member, book: create(:book), due_at: Date.current, returned_at: Time.current) }
+
+      it 'returns only borrowings due today for the user' do
+        expect(member.borrowings.due_today).to include(due_today_borrowing)
+        expect(member.borrowings.due_today).not_to include(due_tomorrow_borrowing)
+        expect(member.borrowings.due_today).not_to include(returned_due_today_borrowing)
+      end
+    end
   end
 
   describe 'librarian functionality' do

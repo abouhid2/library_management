@@ -12,4 +12,4 @@ end
 RSpec.configure do |config|
   config.include JwtHelper, type: :controller
   config.include JwtHelper, type: :request
-end 
+end

@@ -133,7 +133,7 @@ RSpec.describe User, type: :model do
   describe 'database constraints' do
     it 'enforces email uniqueness at database level' do
       create(:user, email: 'test@example.com')
-      
+
       expect {
         User.new(email: 'test@example.com', password: 'password123', name: 'Test User', user_type: 'member').save!
       }.to raise_error(ActiveRecord::RecordInvalid, /Email has already been taken/)
@@ -149,7 +149,7 @@ RSpec.describe User, type: :model do
   describe 'edge cases' do
     it 'handles case insensitive email uniqueness' do
       create(:user, email: 'test@example.com')
-      
+
       user_with_uppercase = build(:user, email: 'TEST@EXAMPLE.COM')
       expect(user_with_uppercase).not_to be_valid
       expect(user_with_uppercase.errors[:email]).to include('has already been taken')
@@ -166,4 +166,4 @@ RSpec.describe User, type: :model do
       expect(user).to be_valid
     end
   end
-end 
+end

@@ -1,12 +1,12 @@
 class Api::AuthController < Api::ApplicationController
-  skip_before_action :authenticate_user!, only: [:login, :register, :logout]
+  skip_before_action :authenticate_user!, only: [ :login, :register, :logout ]
 
   def login
     user = User.find_by(email: params[:email])
 
     if user&.valid_password?(params[:password])
       token = generate_token(user)
-      
+
       render json: {
         success: true,
         token: token,
@@ -27,7 +27,7 @@ class Api::AuthController < Api::ApplicationController
 
     if user.save
       token = generate_token(user)
-      
+
       render json: {
         success: true,
         token: token,
@@ -68,7 +68,7 @@ class Api::AuthController < Api::ApplicationController
 
   def generate_token(user)
     payload = { user_id: user.id, exp: 24.hours.from_now.to_i }
-    JWT.encode(payload, Rails.application.credentials.secret_key_base, 'HS256')
+    JWT.encode(payload, Rails.application.credentials.secret_key_base, "HS256")
   end
 
   def user_params

@@ -32,4 +32,4 @@ FactoryBot.define do
       available_copies { 1 }
     end
   end
-end 
+end

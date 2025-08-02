@@ -1,6 +1,6 @@
 class Api::BooksController < Api::ApplicationController
-  before_action :set_book, only: [:show, :update, :destroy]
-  before_action :require_librarian, only: [:create, :update, :destroy]
+  before_action :set_book, only: [ :show, :update, :destroy ]
+  before_action :require_librarian, only: [ :create, :update, :destroy ]
 
   # GET /api/books
   def index
@@ -59,10 +59,10 @@ class Api::BooksController < Api::ApplicationController
   def set_book
     @book = Book.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Book not found' }, status: :not_found
+    render json: { error: "Book not found" }, status: :not_found
   end
 
   def book_params
     params.require(:book).permit(:title, :author, :genre, :isbn, :total_copies, :available_copies)
   end
-end 
+end

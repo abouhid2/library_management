@@ -6,7 +6,7 @@ class Api::ApplicationController < ApplicationController
 
   def authenticate_user!
     unless current_user
-      render json: { error: 'Authentication required' }, status: :unauthorized
+      render json: { error: "Authentication required" }, status: :unauthorized
     end
   end
 
@@ -19,9 +19,9 @@ class Api::ApplicationController < ApplicationController
 
   def decoded_token
     return nil unless token
-    
+
     @decoded_token ||= begin
-      decoded = JWT.decode(token, Rails.application.credentials.secret_key_base, true, { algorithm: 'HS256' })[0]
+      decoded = JWT.decode(token, Rails.application.credentials.secret_key_base, true, { algorithm: "HS256" })[0]
       Rails.logger.info "Decoded token: #{decoded}"
       decoded
     end
@@ -31,9 +31,9 @@ class Api::ApplicationController < ApplicationController
   end
 
   def token
-    auth_header = request.headers['Authorization']
+    auth_header = request.headers["Authorization"]
     Rails.logger.info "Auth header: #{auth_header}"
-    auth_header&.split(' ')&.last
+    auth_header&.split(" ")&.last
   end
 
   def set_default_format
@@ -50,7 +50,7 @@ class Api::ApplicationController < ApplicationController
 
   def require_librarian
     unless current_user&.librarian?
-      render json: { error: 'Access denied. Librarian privileges required.' }, status: :forbidden
+      render json: { error: "Access denied. Librarian privileges required." }, status: :forbidden
     end
   end
-end 
+end

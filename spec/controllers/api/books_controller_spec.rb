@@ -298,4 +298,4 @@ RSpec.describe Api::BooksController, type: :controller do
       end
     end
   end
-end 
+end

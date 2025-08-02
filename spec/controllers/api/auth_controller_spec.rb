@@ -192,13 +192,17 @@ RSpec.describe Api::AuthController, type: :controller do
         expect(json_response['errors']).to include("Password confirmation doesn't match Password")
       end
 
-      it 'raises ArgumentError for invalid user_type' do
+      it 'returns error for invalid user_type' do
         invalid_type_params = valid_params.deep_dup
         invalid_type_params[:user][:user_type] = 'invalid_type'
 
-        expect {
-          post :register, params: invalid_type_params
-        }.to raise_error(ArgumentError, "'invalid_type' is not a valid user_type")
+        post :register, params: invalid_type_params
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['success']).to be false
+        expect(json_response['errors']).to include('User type is not included in the list')
       end
 
       it 'returns error for missing name' do

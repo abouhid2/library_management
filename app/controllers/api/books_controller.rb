@@ -6,10 +6,19 @@ class Api::BooksController < Api::ApplicationController
   def index
     @books = Book.all
 
-    # Apply search filters
-    @books = @books.search_by_title(params[:title]) if params[:title].present?
-    @books = @books.search_by_author(params[:author]) if params[:author].present?
-    @books = @books.search_by_genre(params[:genre]) if params[:genre].present?
+    # Apply general search across all fields
+    if params[:search].present?
+      search_term = params[:search].downcase
+      @books = @books.where(
+        "LOWER(title) LIKE ? OR LOWER(author) LIKE ? OR LOWER(genre) LIKE ? OR LOWER(isbn) LIKE ?",
+        "%#{search_term}%", "%#{search_term}%", "%#{search_term}%", "%#{search_term}%"
+      )
+    else
+      # Apply specific field search filters
+      @books = @books.search_by_title(params[:title]) if params[:title].present?
+      @books = @books.search_by_author(params[:author]) if params[:author].present?
+      @books = @books.search_by_genre(params[:genre]) if params[:genre].present?
+    end
 
     render json: @books
   end

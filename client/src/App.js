@@ -9,26 +9,22 @@ function App() {
   const [authError, setAuthError] = useState("");
 
   useEffect(() => {
-    // Check if user is already logged in with valid token
     const checkAuth = async () => {
       const token = localStorage.getItem("authToken");
       const savedUser = localStorage.getItem("user");
 
       if (token && savedUser) {
         try {
-          // Validate token with backend
           const response = await authAPI.me();
           if (response.data.success) {
             setUser(response.data.user);
             setAuthError("");
           } else {
-            // Token invalid, clear storage
             localStorage.removeItem("user");
             localStorage.removeItem("authToken");
             setAuthError("Session expired. Please log in again.");
           }
         } catch (error) {
-          // Token expired or invalid, clear storage
           localStorage.removeItem("user");
           localStorage.removeItem("authToken");
           setAuthError("Session expired. Please log in again.");
@@ -51,7 +47,6 @@ function App() {
     } catch (error) {
       console.error("Logout API call failed:", error);
     } finally {
-      // Clear local storage and update state
       localStorage.removeItem("user");
       localStorage.removeItem("authToken");
       setUser(null);

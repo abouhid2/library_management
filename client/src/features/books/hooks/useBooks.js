@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { booksAPI } from "../../../services/api";
 
-export const useBooks = () => {
+export const useBooks = (searchQuery = "") => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const fetchBooks = async () => {
+  const fetchBooks = async (searchParams = {}) => {
     try {
       setLoading(true);
-      const response = await booksAPI.getAll();
+      const response = await booksAPI.getAll(searchParams);
       setBooks(response.data);
       setError(null);
     } catch (err) {
@@ -25,7 +25,7 @@ export const useBooks = () => {
     setIsSubmitting(true);
     try {
       await booksAPI.create(bookData);
-      await fetchBooks();
+      await fetchBooks({ search: searchQuery });
       return true;
     } catch (err) {
       throw err;
@@ -38,7 +38,7 @@ export const useBooks = () => {
     setIsSubmitting(true);
     try {
       await booksAPI.update(bookId, bookData);
-      await fetchBooks();
+      await fetchBooks({ search: searchQuery });
       return true;
     } catch (err) {
       throw err;
@@ -50,16 +50,17 @@ export const useBooks = () => {
   const deleteBook = async (bookId) => {
     try {
       await booksAPI.delete(bookId);
-      await fetchBooks();
+      await fetchBooks({ search: searchQuery });
     } catch (err) {
       setError("Failed to delete book");
       console.error("Error deleting book:", err);
     }
   };
 
+  // Fetch books when search query changes
   useEffect(() => {
-    fetchBooks();
-  }, []);
+    fetchBooks({ search: searchQuery });
+  }, [searchQuery]);
 
   return {
     books,

@@ -3,7 +3,7 @@ import BookForm from "./BookForm";
 import BookTable from "./BookTable";
 import { useBooks } from "../hooks/useBooks";
 
-const Books = ({ user }) => {
+const Books = ({ user, searchQuery = "" }) => {
   const [showForm, setShowForm] = useState(false);
   const [editingBook, setEditingBook] = useState(null);
 
@@ -16,7 +16,7 @@ const Books = ({ user }) => {
     updateBook,
     deleteBook,
     setError,
-  } = useBooks();
+  } = useBooks(searchQuery);
 
   const isLibrarian = user?.user_type === "librarian";
 
@@ -97,6 +97,11 @@ const Books = ({ user }) => {
         <div className="px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900">
             Book Collection ({books.length} books)
+            {searchQuery && (
+              <span className="text-sm font-normal text-gray-500 ml-2">
+                - Filtered by "{searchQuery}"
+              </span>
+            )}
           </h3>
         </div>
         <BookTable

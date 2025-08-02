@@ -26,7 +26,7 @@ RSpec.describe Api::BooksController, type: :controller do
   describe 'GET #index' do
     context 'when user is authenticated' do
       before do
-        sign_in librarian
+        request.headers.merge!(auth_headers_for(librarian))
       end
 
       it 'returns a successful response' do
@@ -59,10 +59,10 @@ RSpec.describe Api::BooksController, type: :controller do
         end
 
         it 'filters by genre' do
-          get :index, params: { genre: 'Fiction' }
+          get :index, params: { genre: 'Non-Fiction' }
           response_body = JSON.parse(response.body)
           expect(response_body.size).to eq(1)
-          expect(response_body.first['genre']).to eq('Fiction')
+          expect(response_body.first['genre']).to eq('Non-Fiction')
         end
       end
     end
@@ -78,7 +78,7 @@ RSpec.describe Api::BooksController, type: :controller do
   describe 'GET #show' do
     context 'when user is authenticated' do
       before do
-        sign_in librarian
+        request.headers.merge!(auth_headers_for(librarian))
       end
 
       it 'returns a successful response' do
@@ -110,7 +110,7 @@ RSpec.describe Api::BooksController, type: :controller do
   describe 'POST #create' do
     context 'when user is a librarian' do
       before do
-        sign_in librarian
+        request.headers.merge!(auth_headers_for(librarian))
       end
 
       context 'with valid parameters' do
@@ -155,7 +155,7 @@ RSpec.describe Api::BooksController, type: :controller do
 
     context 'when user is a member' do
       before do
-        sign_in member
+        request.headers.merge!(auth_headers_for(member))
       end
 
       it 'returns forbidden status' do
@@ -188,7 +188,7 @@ RSpec.describe Api::BooksController, type: :controller do
 
     context 'when user is a librarian' do
       before do
-        sign_in librarian
+        request.headers.merge!(auth_headers_for(librarian))
       end
 
       context 'with valid parameters' do
@@ -232,7 +232,7 @@ RSpec.describe Api::BooksController, type: :controller do
 
     context 'when user is a member' do
       before do
-        sign_in member
+        request.headers.merge!(auth_headers_for(member))
       end
 
       it 'returns forbidden status' do
@@ -254,7 +254,7 @@ RSpec.describe Api::BooksController, type: :controller do
 
     context 'when user is a librarian' do
       before do
-        sign_in librarian
+        request.headers.merge!(auth_headers_for(librarian))
       end
 
       it 'destroys the requested book' do
@@ -276,7 +276,7 @@ RSpec.describe Api::BooksController, type: :controller do
 
     context 'when user is a member' do
       before do
-        sign_in member
+        request.headers.merge!(auth_headers_for(member))
       end
 
       it 'returns forbidden status' do

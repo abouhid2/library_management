@@ -118,6 +118,8 @@ const Books = ({ user, searchQuery = "" }) => {
       <BookHeader
         isLibrarian={isLibrarian}
         onAddBook={() => setShowForm(true)}
+        books={books}
+        searchQuery={searchQuery}
       />
 
       <ErrorDisplay error={error} />

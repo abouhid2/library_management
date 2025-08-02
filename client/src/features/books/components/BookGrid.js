@@ -12,7 +12,7 @@ const BookGrid = ({
   isSubmitting = false,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const booksPerPage = 12; // Show 12 books per page (3 rows of 4 cards)
+  const booksPerPage = 9;
 
   if (books.length === 0) {
     return (
@@ -47,9 +47,9 @@ const BookGrid = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       {/* Book Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-6">
         {currentBooks.map((book) => {
           const isBorrowed = isBookBorrowed(book.id);
           const activeBorrowings = getActiveBorrowingsForBook(book.id);

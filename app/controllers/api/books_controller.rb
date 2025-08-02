@@ -10,8 +10,8 @@ class Api::BooksController < Api::ApplicationController
     if params[:search].present?
       search_term = params[:search].downcase
       @books = @books.where(
-        "LOWER(title) LIKE ? OR LOWER(author) LIKE ? OR LOWER(genre) LIKE ? OR LOWER(isbn) LIKE ?",
-        "%#{search_term}%", "%#{search_term}%", "%#{search_term}%", "%#{search_term}%"
+        "LOWER(title) LIKE ? OR LOWER(author) LIKE ? OR LOWER(genre) LIKE ?",
+        "%#{search_term}%", "%#{search_term}%", "%#{search_term}%"
       )
     else
       # Apply specific field search filters

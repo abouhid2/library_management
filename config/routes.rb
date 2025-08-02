@@ -10,6 +10,15 @@ Rails.application.routes.draw do
     get "auth/me", to: "auth#me"
 
     resources :books
+    resources :borrowings do
+      member do
+        patch :return
+      end
+      collection do
+        get :overdue
+        get :my_overdue
+      end
+    end
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

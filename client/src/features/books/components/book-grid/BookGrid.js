@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import BorrowButton from "./BorrowButton";
-import BookForm from "./BookForm";
+import BookForm from "../BookForm";
 
 const BookGrid = ({
   books,

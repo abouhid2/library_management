@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import BookForm from "./BookForm";
 import BookHeader from "./BookHeader";
-import BookList from "./BookList";
+import { BookGrid } from "./book-grid";
 import ErrorDisplay from "./form/ErrorDisplay";
 import Notification from "../../../components/Notification";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
@@ -141,9 +141,8 @@ const Books = ({ user, searchQuery = "" }) => {
         />
       )}
 
-      <BookList
+      <BookGrid
         books={books}
-        searchQuery={searchQuery}
         isLibrarian={isLibrarian}
         onEdit={handleEdit}
         onDelete={handleDelete}

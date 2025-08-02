@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import BorrowingsList from "../BorrowingsList";
+import { BorrowingsList } from "../dashboard";
 
 // Mock the BorrowingsTable component
 jest.mock("../BorrowingsTable", () => {

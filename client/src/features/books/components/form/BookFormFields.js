@@ -57,17 +57,6 @@ const BookFormFields = ({
         min="0"
         error={fieldErrors.total_copies}
       />
-
-      <FormField
-        label="Available Copies"
-        name="available_copies"
-        type="number"
-        value={formData.available_copies}
-        onChange={handleInputChange}
-        required
-        min="0"
-        error={fieldErrors.available_copies}
-      />
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import ReturnButton from "./ReturnButton";
+import ReturnButton from "../book-grid/ReturnButton";
 
 const BorrowingsTable = ({
   borrowings,

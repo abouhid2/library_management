@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Dashboard from "../Dashboard";
+import { Dashboard } from "../dashboard";
 import { useBorrowings } from "../../hooks/useBorrowings";
 import { useDashboard } from "../../hooks/useDashboard";
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import DashboardHeader from "../DashboardHeader";
+import { DashboardHeader } from "../dashboard";
 
 describe("DashboardHeader", () => {
   const mockOnToggleOverdue = jest.fn();

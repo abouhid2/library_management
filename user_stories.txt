@@ -18,11 +18,6 @@
 - Users can log in with their credentials
 - Users can log out securely
 
-**API Endpoints:**
-- POST /api/auth/register
-- POST /api/auth/login
-- DELETE /api/auth/logout
-
 ---
 
 ## User Story 2: Book Management (Librarian Only)
@@ -39,13 +34,6 @@
 - Can search books by title, author, or genre
 - Only Librarian users can perform these operations
 
-**API Endpoints:**
-- GET /api/books (with search parameters)
-- POST /api/books
-- GET /api/books/:id
-- PUT /api/books/:id
-- DELETE /api/books/:id
-
 ---
 
 ## User Story 3: Book Borrowing (Members Only)
@@ -61,11 +49,6 @@
 - System tracks borrowing date and due date (2 weeks from borrowing)
 - System prevents borrowing when no copies are available
 
-**API Endpoints:**
-- GET /api/books/available
-- POST /api/borrowings
-- GET /api/borrowings/my-books
-
 ---
 
 ## User Story 4: Book Returning (Librarian Only)
@@ -79,10 +62,6 @@
 - System updates book availability
 - System records return date
 - Can view all current borrowings
-
-**API Endpoints:**
-- PUT /api/borrowings/:id/return
-- GET /api/borrowings
 
 ---
 
@@ -99,10 +78,6 @@
 - View list of members with overdue books
 - Quick access to book management functions
 
-**API Endpoints:**
-- GET /api/dashboard/librarian
-- GET /api/borrowings/overdue
-
 ---
 
 ## User Story 6: Member Dashboard
@@ -117,49 +92,23 @@
 - Highlight overdue books
 - Quick access to available books for borrowing
 
-**API Endpoints:**
-- GET /api/dashboard/member
-- GET /api/borrowings/my-books
-
 ---
 
-## User Story 7: Search Functionality
+## User Story 7: Grid View with Inline Editing
 
-**As a** user  
-**I want** to search for books  
-**So that** I can quickly find books I'm interested in
-
-**Acceptance Criteria:**
-- Search by book title
-- Search by author name
-- Search by genre
-- Search results are paginated
-- Search is case-insensitive
-- Empty search returns all books
-
-**API Endpoints:**
-- GET /api/books?search=query&filter=title|author|genre
-
----
-
-## User Story 8: Frontend Integration
-
-**As a** user  
-**I want** a responsive and user-friendly web interface  
-**So that** I can easily interact with the library management system
+**As a** Librarian  
+**I want** to view books in a grid layout with inline editing capabilities  
+**So that** I can efficiently manage books without navigating away from the current view
 
 **Acceptance Criteria:**
-- Responsive design that works on desktop and mobile
-- Clean, modern UI with intuitive navigation
-- Role-based access control (different views for Librarian vs Member)
-- Real-time updates for book availability
-- Form validation and error handling
-- Loading states and user feedback
-
-**Frontend Features:**
-- Authentication pages (login/register)
-- Dashboard views for both user types
-- Book management interface (Librarian)
-- Book browsing and borrowing interface (Member)
-- Search functionality with filters
-- Responsive navigation and layout
+- Books are displayed in a responsive grid layout
+- Each book card shows title, author, genre, ISBN, and available copies
+- Clicking the edit button on a book card opens an edit form directly within that card
+- The edit form replaces the book information display in the same grid position
+- Form includes fields for title, author, genre, ISBN, and total copies
+- Save and cancel buttons are available within the inline form
+- After saving, the card returns to display mode with updated information
+- After canceling, the card returns to display mode without changes
+- Only Librarian users can see and use the edit functionality
+- Grid layout adjusts automatically when forms are opened/closed
+- Visual feedback indicates which card is currently being edited

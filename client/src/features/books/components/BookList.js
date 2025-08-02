@@ -11,6 +11,8 @@ const BookList = ({
   onReturn,
   borrowings,
   isSubmitting,
+  onSubmitEdit,
+  onCancelEdit,
 }) => {
   return (
     <div className="space-y-6">
@@ -23,6 +25,8 @@ const BookList = ({
         onReturn={onReturn}
         borrowings={borrowings}
         isSubmitting={isSubmitting}
+        onSubmitEdit={onSubmitEdit}
+        onCancelEdit={onCancelEdit}
       />
     </div>
   );

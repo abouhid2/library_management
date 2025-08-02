@@ -1,6 +1,13 @@
 import React, { useState } from "react";
+import { useFormErrors } from "../../../hooks/useFormErrors";
 
-const BookForm = ({ onSubmit, onCancel, editingBook, isSubmitting }) => {
+const BookForm = ({
+  onSubmit,
+  onCancel,
+  editingBook,
+  isSubmitting,
+  isInline = false,
+}) => {
   const [formData, setFormData] = useState({
     title: editingBook?.title || "",
     author: editingBook?.author || "",
@@ -11,7 +18,16 @@ const BookForm = ({ onSubmit, onCancel, editingBook, isSubmitting }) => {
     image: editingBook?.image || "",
   });
 
-  const [fieldErrors, setFieldErrors] = useState({});
+  // Use the custom error handling hook
+  const { fieldErrors, clearErrors, handleApiError } = useFormErrors({
+    title: "title",
+    author: "author",
+    genre: "genre",
+    isbn: "isbn",
+    total_copies: "total_copies",
+    available_copies: "available_copies",
+    image: "image",
+  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -19,14 +35,6 @@ const BookForm = ({ onSubmit, onCancel, editingBook, isSubmitting }) => {
       ...prev,
       [name]: value,
     }));
-
-    // Clear field error when user starts typing
-    if (fieldErrors[name]) {
-      setFieldErrors((prev) => ({
-        ...prev,
-        [name]: null,
-      }));
-    }
   };
 
   const handleSubmit = async (e) => {
@@ -51,37 +59,10 @@ const BookForm = ({ onSubmit, onCancel, editingBook, isSubmitting }) => {
         available_copies: "",
         image: "",
       });
-      setFieldErrors({});
+      clearErrors();
     } catch (err) {
-      // Handle validation errors from backend
-      if (err.response?.data?.errors) {
-        const backendErrors = err.response.data.errors;
-        const newFieldErrors = {};
-
-        // Parse backend errors and map them to field names
-        backendErrors.forEach((errorMessage) => {
-          if (errorMessage.includes("Title")) {
-            newFieldErrors.title = errorMessage;
-          } else if (errorMessage.includes("Author")) {
-            newFieldErrors.author = errorMessage;
-          } else if (errorMessage.includes("Genre")) {
-            newFieldErrors.genre = errorMessage;
-          } else if (
-            errorMessage.includes("ISBN") ||
-            errorMessage.includes("Isbn")
-          ) {
-            newFieldErrors.isbn = errorMessage;
-          } else if (errorMessage.includes("Total copies")) {
-            newFieldErrors.total_copies = errorMessage;
-          } else if (errorMessage.includes("Available copies")) {
-            newFieldErrors.available_copies = errorMessage;
-          } else if (errorMessage.includes("Image")) {
-            newFieldErrors.image = errorMessage;
-          }
-        });
-
-        setFieldErrors(newFieldErrors);
-      }
+      // Use the custom error handler
+      handleApiError(err);
       throw err; // Re-throw to let parent handle general errors
     }
   };
@@ -94,12 +75,219 @@ const BookForm = ({ onSubmit, onCancel, editingBook, isSubmitting }) => {
     }`;
   };
 
+  if (isInline) {
+    return (
+      <div className="bg-white rounded-lg shadow-md p-4">
+        <h3 className="text-md font-semibold text-gray-900 mb-3">Edit Book</h3>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          {/* Display general errors */}
+          {fieldErrors.general && (
+            <div className="bg-red-50 border border-red-200 rounded-md p-3">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg
+                    className="h-5 w-5 text-red-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-red-800">
+                    There were errors with your submission
+                  </h3>
+                  <div className="mt-2 text-sm text-red-700">
+                    <ul className="list-disc pl-5 space-y-1">
+                      {Array.isArray(fieldErrors.general) ? (
+                        fieldErrors.general.map((error, index) => (
+                          <li key={index}>{error}</li>
+                        ))
+                      ) : (
+                        <li>{fieldErrors.general}</li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="grid grid-cols-1 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                Title *
+              </label>
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                required
+                className={getFieldClassName("title")}
+              />
+              {fieldErrors.title && (
+                <p className="text-red-500 text-xs mt-1">{fieldErrors.title}</p>
+              )}
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                Author *
+              </label>
+              <input
+                type="text"
+                name="author"
+                value={formData.author}
+                onChange={handleInputChange}
+                required
+                className={getFieldClassName("author")}
+              />
+              {fieldErrors.author && (
+                <p className="text-red-500 text-xs mt-1">
+                  {fieldErrors.author}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                Genre *
+              </label>
+              <input
+                type="text"
+                name="genre"
+                value={formData.genre}
+                onChange={handleInputChange}
+                required
+                className={getFieldClassName("genre")}
+              />
+              {fieldErrors.genre && (
+                <p className="text-red-500 text-xs mt-1">{fieldErrors.genre}</p>
+              )}
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                ISBN *
+              </label>
+              <input
+                type="text"
+                name="isbn"
+                value={formData.isbn}
+                onChange={handleInputChange}
+                required
+                className={getFieldClassName("isbn")}
+              />
+              {fieldErrors.isbn && (
+                <p className="text-red-500 text-xs mt-1">{fieldErrors.isbn}</p>
+              )}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">
+                  Total Copies *
+                </label>
+                <input
+                  type="number"
+                  name="total_copies"
+                  value={formData.total_copies}
+                  onChange={handleInputChange}
+                  required
+                  min="0"
+                  className={getFieldClassName("total_copies")}
+                />
+                {fieldErrors.total_copies && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {fieldErrors.total_copies}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">
+                  Available Copies *
+                </label>
+                <input
+                  type="number"
+                  name="available_copies"
+                  value={formData.available_copies}
+                  onChange={handleInputChange}
+                  required
+                  min="0"
+                  className={getFieldClassName("available_copies")}
+                />
+                {fieldErrors.available_copies && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {fieldErrors.available_copies}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-2">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="px-3 py-1 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded text-xs font-medium transition-colors duration-200"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-3 py-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded text-xs font-medium transition-colors duration-200"
+            >
+              {isSubmitting ? "Saving..." : "Save"}
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
         {editingBook ? "Edit Book" : "Add New Book"}
       </h3>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Display general errors */}
+        {fieldErrors.general && (
+          <div className="bg-red-50 border border-red-200 rounded-md p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg
+                  className="h-5 w-5 text-red-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">
+                  There were errors with your submission
+                </h3>
+                <div className="mt-2 text-sm text-red-700">
+                  <ul className="list-disc pl-5 space-y-1">
+                    {Array.isArray(fieldErrors.general) ? (
+                      fieldErrors.general.map((error, index) => (
+                        <li key={index}>{error}</li>
+                      ))
+                    ) : (
+                      <li>{fieldErrors.general}</li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">

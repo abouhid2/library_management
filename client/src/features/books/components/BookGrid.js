@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import BorrowButton from "./BorrowButton";
+import BookForm from "./BookForm";
 
 const BookGrid = ({
   books,
@@ -10,8 +11,11 @@ const BookGrid = ({
   onReturn,
   borrowings = [],
   isSubmitting = false,
+  onSubmitEdit,
+  onCancelEdit,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [editingBookId, setEditingBookId] = useState(null);
   const booksPerPage = 9;
 
   if (books.length === 0) {
@@ -44,6 +48,28 @@ const BookGrid = ({
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+    setEditingBookId(null); // Reset editing when changing pages
+  };
+
+  const handleEditClick = (book) => {
+    setEditingBookId(book.id);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingBookId(null);
+    if (onCancelEdit) {
+      onCancelEdit();
+    }
+  };
+
+  const handleSubmitEdit = async (bookData) => {
+    try {
+      await onSubmitEdit(editingBookId, bookData);
+      setEditingBookId(null);
+    } catch (error) {
+      // Error handling is done in the parent component
+      throw error;
+    }
   };
 
   return (
@@ -53,6 +79,22 @@ const BookGrid = ({
         {currentBooks.map((book) => {
           const isBorrowed = isBookBorrowed(book.id);
           const activeBorrowings = getActiveBorrowingsForBook(book.id);
+          const isEditing = editingBookId === book.id;
+
+          // If this book is being edited, show the inline form
+          if (isEditing && isLibrarian) {
+            return (
+              <div key={book.id} className="col-span-1">
+                <BookForm
+                  onSubmit={handleSubmitEdit}
+                  onCancel={handleCancelEdit}
+                  editingBook={book}
+                  isSubmitting={isSubmitting}
+                  isInline={true}
+                />
+              </div>
+            );
+          }
 
           return (
             <div
@@ -125,7 +167,7 @@ const BookGrid = ({
                     // Librarian actions
                     <div className="flex space-x-2">
                       <button
-                        onClick={() => onEdit(book)}
+                        onClick={() => handleEditClick(book)}
                         className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-2 px-3 rounded transition-colors duration-200"
                       >
                         Edit

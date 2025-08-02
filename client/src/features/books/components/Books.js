@@ -59,6 +59,16 @@ const Books = ({ user, searchQuery = "" }) => {
     }
   };
 
+  const handleInlineSubmit = async (bookId, bookData) => {
+    try {
+      await updateBook(bookId, bookData);
+      showNotification("Book updated successfully!");
+    } catch (err) {
+      setError(err.response?.data?.error || "Failed to update book");
+      throw err; // Re-throw to let BookForm handle field-specific errors
+    }
+  };
+
   const handleEdit = (book) => {
     setEditingBook(book);
     setShowForm(true);
@@ -144,6 +154,8 @@ const Books = ({ user, searchQuery = "" }) => {
         onReturn={handleReturn}
         borrowings={borrowings}
         isSubmitting={isBorrowingSubmitting}
+        onSubmitEdit={handleInlineSubmit}
+        onCancelEdit={() => setError(null)}
       />
 
       {notification && (

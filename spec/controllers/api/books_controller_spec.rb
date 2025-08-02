@@ -279,7 +279,7 @@ RSpec.describe Api::BooksController, type: :controller do
 
         delete :destroy, params: { id: book_to_delete.id }
         expect(response).to have_http_status(:unprocessable_entity)
-        
+
         response_body = JSON.parse(response.body)
         expect(response_body['error']).to eq('Cannot delete book: It is currently borrowed')
       end

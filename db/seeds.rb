@@ -162,7 +162,7 @@ borrowings_data = [
     borrowed_at: 1.day.ago,
     due_at: 13.days.from_now
   },
-  
+
   # Multiple users borrowing another book (To Kill a Mockingbird)
   {
     user: User.find_by(email: 'member@library.com'),
@@ -176,7 +176,7 @@ borrowings_data = [
     borrowed_at: 5.days.ago,
     due_at: 9.days.from_now
   },
-  
+
   # Single borrowings for other books
   {
     user: User.find_by(email: 'member1@library.com'),
@@ -184,7 +184,7 @@ borrowings_data = [
     borrowed_at: 1.week.ago,
     due_at: 1.week.from_now
   },
-  
+
   # Fully borrowed book (The Catcher in the Rye - all 4 copies)
   {
     user: User.find_by(email: 'member@library.com'),
@@ -222,7 +222,7 @@ borrowings_data = [
     borrowed_at: 3.days.ago,
     due_at: 11.days.from_now
   },
-  
+
   # Some overdue borrowings
   {
     user: User.find_by(email: 'member@library.com'),
@@ -230,7 +230,7 @@ borrowings_data = [
     borrowed_at: 3.weeks.ago,
     due_at: 1.week.ago # Overdue
   },
-  
+
   # Fully borrowed book (Brave New World - all 3 copies)
   {
     user: User.find_by(email: 'member1@library.com'),
@@ -255,9 +255,9 @@ borrowings_data = [
 borrowings_data.each do |borrowing_attrs|
   user = borrowing_attrs[:user]
   book = borrowing_attrs[:book]
-  
+
   next unless user && book
-  
+
   # Create the borrowing
   Borrowing.find_or_create_by!(
     user: user,

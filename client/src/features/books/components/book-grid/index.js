@@ -1,3 +1,9 @@
 export { default as BookGrid } from "./BookGrid";
+export { default as BookFilter } from "./BookFilter";
+export { default as BookCard } from "./BookCard";
+export { default as Pagination } from "./Pagination";
+export { default as EmptyState } from "./EmptyState";
+export { default as useBookFilter } from "./useBookFilter";
+export { default as usePagination } from "./usePagination";
 export { default as BorrowButton } from "./BorrowButton";
 export { default as ReturnButton } from "./ReturnButton";

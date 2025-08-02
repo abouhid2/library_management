@@ -1,5 +1,4 @@
 import React from "react";
-import B2gLoader from "./B2gLoader";
 
 const LoadingSpinner = ({
   message = "Loading...",
@@ -16,9 +15,6 @@ const LoadingSpinner = ({
   return (
     <div className={containerClasses}>
       <div className={contentClasses}>
-        <div className="mb-4">
-          <B2gLoader />
-        </div>
         <div className="text-lg text-secondary font-medium">{message}</div>
         {subtitle && <div className="mt-2 text-accent text-sm">{subtitle}</div>}
       </div>

@@ -80,3 +80,4 @@ storage/*
 # Docker files
 Dockerfile*
 .dockerignore
+client/package-lock.json

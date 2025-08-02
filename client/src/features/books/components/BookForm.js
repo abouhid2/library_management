@@ -8,6 +8,7 @@ const BookForm = ({ onSubmit, onCancel, editingBook, isSubmitting }) => {
     isbn: editingBook?.isbn || "",
     total_copies: editingBook?.total_copies?.toString() || "",
     available_copies: editingBook?.available_copies?.toString() || "",
+    image: editingBook?.image || "",
   });
 
   const [fieldErrors, setFieldErrors] = useState({});
@@ -48,6 +49,7 @@ const BookForm = ({ onSubmit, onCancel, editingBook, isSubmitting }) => {
         isbn: "",
         total_copies: "",
         available_copies: "",
+        image: "",
       });
       setFieldErrors({});
     } catch (err) {
@@ -73,6 +75,8 @@ const BookForm = ({ onSubmit, onCancel, editingBook, isSubmitting }) => {
             newFieldErrors.total_copies = errorMessage;
           } else if (errorMessage.includes("Available copies")) {
             newFieldErrors.available_copies = errorMessage;
+          } else if (errorMessage.includes("Image")) {
+            newFieldErrors.image = errorMessage;
           }
         });
 
@@ -200,6 +204,28 @@ const BookForm = ({ onSubmit, onCancel, editingBook, isSubmitting }) => {
             )}
           </div>
         </div>
+
+        {/* Image URL field - full width */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Cover Image URL
+          </label>
+          <input
+            type="url"
+            name="image"
+            value={formData.image}
+            onChange={handleInputChange}
+            placeholder="https://example.com/book-cover.jpg"
+            className={getFieldClassName("image")}
+          />
+          <p className="text-gray-500 text-xs mt-1">
+            Leave empty to use a placeholder image with the book title
+          </p>
+          {fieldErrors.image && (
+            <p className="text-red-500 text-xs mt-1">{fieldErrors.image}</p>
+          )}
+        </div>
+
         <div className="flex justify-end space-x-3">
           <button
             type="button"

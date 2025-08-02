@@ -41,18 +41,14 @@ RSpec.describe Book, type: :model do
         expect(book.image_url).to eq('https://example.com/book-cover.jpg')
       end
 
-      it 'returns a placeholder URL when image is not present' do
-        book = build(:book, image: nil, title: 'Test Book')
-        placeholder_url = book.image_url
-        expect(placeholder_url).to include('via.placeholder.com')
-        expect(placeholder_url).to include('Test+Book')
+      it 'returns nil when image is not present' do
+        book = build(:book, image: nil)
+        expect(book.image_url).to be_nil
       end
 
-      it 'returns a placeholder URL when image is empty string' do
-        book = build(:book, image: '', title: 'Another Book')
-        placeholder_url = book.image_url
-        expect(placeholder_url).to include('via.placeholder.com')
-        expect(placeholder_url).to include('Another+Book')
+      it 'returns nil when image is empty string' do
+        book = build(:book, image: '')
+        expect(book.image_url).to be_nil
       end
     end
   end

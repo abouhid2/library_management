@@ -51,8 +51,8 @@ class Book < ApplicationRecord
   # Image methods
   def image_url
     return image if image.present?
-    # Return a placeholder image URL if no image is set
-    "https://via.placeholder.com/300x400/cccccc/666666?text=#{CGI.escape(title)}"
+    # Return nil when no image is present - frontend will handle placeholder
+    nil
   end
 
   # Borrowing methods

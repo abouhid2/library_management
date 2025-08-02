@@ -48,6 +48,13 @@ class Book < ApplicationRecord
     end
   end
 
+  # Image methods
+  def image_url
+    return image if image.present?
+    # Return a placeholder image URL if no image is set
+    "https://via.placeholder.com/300x400/cccccc/666666?text=#{CGI.escape(title)}"
+  end
+
   # Borrowing methods
   def can_be_borrowed_by?(user)
     return false unless user.member?

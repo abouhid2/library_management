@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_02_132346) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_02_193907) do
   create_table "books", force: :cascade do |t|
     t.string "title", null: false
     t.string "author", null: false
@@ -20,6 +20,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_02_132346) do
     t.integer "available_copies", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "image"
     t.index ["author"], name: "index_books_on_author"
     t.index ["genre"], name: "index_books_on_genre"
     t.index ["isbn"], name: "index_books_on_isbn", unique: true

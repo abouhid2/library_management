@@ -8,7 +8,7 @@ export const useBookForm = (editingBook, onSubmit) => {
     genre: editingBook?.genre || "",
     isbn: editingBook?.isbn || "",
     total_copies: editingBook?.total_copies || 0,
-    available_copies: editingBook?.available_copies || 0,
+    available_copies: editingBook?.available_copies,
   });
 
   const [selectedImage, setSelectedImage] = useState(null);

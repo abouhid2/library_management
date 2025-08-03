@@ -133,3 +133,40 @@
 - Image upload supports drag-and-drop functionality
 - Only Librarian users can upload and manage book images
 - Images are displayed in appropriate aspect ratios across different screen sizes
+
+---
+
+## User Story 9: Easy Application Setup and Deployment
+
+**As a** User  
+**I want** to set up and run the application easily without technical complications  
+**So that** I can start using the library management system quickly and reliably
+
+**Acceptance Criteria:**
+- Application can be installed and configured with minimal technical knowledge
+- Clear step-by-step setup instructions are provided in a README file
+- All dependencies are automatically installed with a single command
+- Database setup is automated and requires no manual configuration
+- Application starts with a single command after setup
+- Default admin account is created automatically during first-time setup
+- Application runs on standard ports and is accessible via web browser
+- Setup process includes validation to ensure all components are working
+- Application provides clear error messages if setup fails
+- Clear troubleshooting guide is provided for common setup issues
+
+---
+
+## User Story 10: Minor Corrections and Improvements
+
+**As a** User  
+**I want** the application to have proper branding and logical business rules  
+**So that** the system appears professional and prevents data inconsistencies
+
+**Acceptance Criteria:**
+- Application logo is displayed on the loading screen for proper branding
+- Cannot set total copies of a book to less than the number of currently borrowed copies
+- System prevents librarians from reducing total copies below the borrowed amount
+- Clear error message is shown when attempting to set invalid total copies
+- Error message for wrong type of image when uploaded is shown correctly
+- Loading screen provides visual feedback with the library system logo
+- Logo maintains proper aspect ratio and positioning on loading screen

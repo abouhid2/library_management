@@ -1,0 +1,24 @@
+# Application configuration
+# Add your environment-specific variables here
+
+# Database configuration
+DATABASE_URL: "sqlite3:db/development.sqlite3"
+
+# Rails environment
+RAILS_ENV: "development"
+
+# Secret key base (will be generated automatically)
+SECRET_KEY_BASE: ""
+
+# Application settings
+APP_NAME: "Books 2 Go"
+APP_HOST: "localhost"
+APP_PORT: "3001"
+
+# API settings
+API_VERSION: "v1"
+CORS_ORIGINS: "http://localhost:3000"
+
+# Authentication settings
+DEVISE_SECRET_KEY: ""
+JWT_SECRET_KEY: ""

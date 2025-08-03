@@ -28,5 +28,6 @@ module LibraryManagement
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    config.secret_key_base = ENV["SECRET_KEY_BASE"] || "development_secret_key_base_for_jwt_tokens_only_do_not_use_in_production"
   end
 end

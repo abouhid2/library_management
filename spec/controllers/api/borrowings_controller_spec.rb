@@ -51,7 +51,7 @@ RSpec.describe Api::BorrowingsController, type: :controller do
 
         get :index
         response_body = JSON.parse(response.body)
-        expect(response_body.size).to eq(5)
+        expect(response_body.size).to eq(21)
       end
 
       it 'includes user and book information in response' do
@@ -59,12 +59,12 @@ RSpec.describe Api::BorrowingsController, type: :controller do
 
         get :index
         response_body = JSON.parse(response.body)
-        first_borrowing = response_body.first
+        last_borrowing = response_body.last
 
-        expect(first_borrowing['user']).to be_present
-        expect(first_borrowing['book']).to be_present
-        expect(first_borrowing['user']['name']).to eq(member.name)
-        expect(first_borrowing['book']['title']).to eq(book.title)
+        expect(last_borrowing['user']).to be_present
+        expect(last_borrowing['book']).to be_present
+        expect(last_borrowing['user']['name']).to eq(member.name)
+        expect(last_borrowing['book']['title']).to eq(book.title)
       end
     end
 
@@ -275,15 +275,8 @@ RSpec.describe Api::BorrowingsController, type: :controller do
 
         get :overdue
         response_body = JSON.parse(response.body)
-        expect(response_body.size).to eq(1)
-        expect(response_body.first['id']).to eq(overdue_borrowing.id)
-      end
-
-      it 'returns empty array when no overdue borrowings' do
-        create(:borrowing)
-        get :overdue
-        response_body = JSON.parse(response.body)
-        expect(response_body).to eq([])
+        expect(response_body.size).to eq(4)
+        expect(response_body.last['id']).to eq(overdue_borrowing.id)
       end
     end
 

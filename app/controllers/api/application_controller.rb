@@ -21,7 +21,7 @@ class Api::ApplicationController < ApplicationController
     return nil unless token
 
     @decoded_token ||= begin
-      decoded = JWT.decode(token, Rails.application.credentials.secret_key_base, true, { algorithm: "HS256" })[0]
+      decoded = JWT.decode(token, Rails.application.secret_key_base, true, { algorithm: "HS256" })[0]
       Rails.logger.info "Decoded token: #{decoded}"
       decoded
     end

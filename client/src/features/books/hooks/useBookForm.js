@@ -7,8 +7,8 @@ export const useBookForm = (editingBook, onSubmit) => {
     author: editingBook?.author || "",
     genre: editingBook?.genre || "",
     isbn: editingBook?.isbn || "",
-    total_copies: editingBook?.total_copies?.toString() || "",
-    available_copies: editingBook?.available_copies?.toString() || "",
+    total_copies: editingBook?.total_copies || 0,
+    available_copies: editingBook?.available_copies || 0,
   });
 
   const [selectedImage, setSelectedImage] = useState(null);
@@ -108,7 +108,6 @@ export const useBookForm = (editingBook, onSubmit) => {
     } catch (err) {
       // Use the custom error handler
       handleApiError(err);
-      throw err; // Re-throw to let parent handle general errors
     }
   };
 

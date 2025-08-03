@@ -66,6 +66,7 @@ chmod +x setup.sh
 - ✅ Installs Ruby dependencies (`bundle install`)
 - ✅ Creates missing configuration files (`database.yml`, `application.yml`)
 - ✅ Sets up the database with demo data
+- ✅ Regenerates Rails binstubs (fixes common Rails command issues)
 - ✅ Installs Node.js dependencies
 - ✅ Creates demo users and books for testing
 
@@ -85,6 +86,8 @@ bundle exec rails server -p 3001
 cd client
 npm start
 ```
+
+> **💡 Pro Tip**: Always use `bundle exec` before Rails commands to ensure you're using the correct gem versions from your Gemfile.
 
 ### 3. Access the Application
 
@@ -111,10 +114,11 @@ The application includes:
 
 ### Common Issues
 
-**1. "Rails command not found"**
+**1. "Rails command not found" or "Binstub error"**
 
 ```bash
-# Make sure you're using bundler
+# The setup script should fix this automatically, but if you encounter issues:
+bundle exec rails app:update:bin
 bundle exec rails --version
 ```
 
@@ -141,6 +145,13 @@ rm -rf node_modules package-lock.json
 npm install
 ```
 
+**5. "Permission denied" on setup script**
+
+```bash
+# Make sure the script is executable
+chmod +x setup.sh
+```
+
 ### Manual Setup (Alternative)
 
 If the setup script fails, you can set up manually:
@@ -149,6 +160,12 @@ If the setup script fails, you can set up manually:
 
 ```bash
 bundle install
+```
+
+#### Fix Rails Binstubs (Important!)
+
+```bash
+bundle exec rails app:update:bin
 ```
 
 #### Database Setup

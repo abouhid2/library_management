@@ -54,6 +54,9 @@ fi
 echo "🗄️  Setting up database..."
 bundle exec rails db:create db:migrate db:seed
 
+# Regenerate Rails binstubs
+echo "🔧 Regenerating Rails binstubs..."
+bundle exec rails app:update:bin
 
 # Install Node dependencies
 echo "📦 Installing Node dependencies..."
@@ -68,4 +71,4 @@ echo "1. Start the Rails server: bundle exec rails server -p 3001"
 echo "2. In another terminal, start the React app: cd client && npm start"
 echo ""
 echo "The Rails API will be available at http://localhost:3001"
-echo "The React app will be available at http://localhost:3000" 
+echo "The React app will be available at http://localhost:3000"

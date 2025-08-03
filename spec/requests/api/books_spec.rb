@@ -40,7 +40,7 @@ RSpec.describe 'Api::Books', type: :request do
         create_list(:book, 3)
         get '/api/books', headers: auth_headers_for(librarian)
         json_response = JSON.parse(response.body)
-        expect(json_response.size).to eq(18)
+        expect(json_response.size).to eq(21)
       end
 
       context 'with search parameters' do

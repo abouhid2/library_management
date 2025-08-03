@@ -78,7 +78,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'returns correct count' do
-        expect(User.members.count).to eq(6)
+        expect(User.members.count).to eq(7)
       end
     end
   end

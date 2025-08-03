@@ -90,7 +90,7 @@ const BookCard = ({
         {/* Copies Info */}
         <div className="absolute bottom-2 left-2">
           <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-black bg-opacity-75 text-white">
-            {book.available_copies}/{book.total_copies}
+            {book.total_copies}/{book.available_copies}
           </span>
         </div>
         {/* Disabled overlay for members */}

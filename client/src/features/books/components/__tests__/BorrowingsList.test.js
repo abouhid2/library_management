@@ -45,7 +45,7 @@ jest.mock("../../../../components/SortControl", () => {
 });
 
 // Mock the useSorting hook
-jest.mock("../../../../hooks/useSorting", () => {
+jest.mock("../../hooks/useSorting", () => {
   return function useSorting(items, defaultSortField, defaultSortDirection) {
     return {
       sortedItems: items,

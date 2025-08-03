@@ -45,7 +45,7 @@ books_data = [
     genre: "Classic Fiction",
     isbn: "978-0743273565",
     total_copies: 5,
-    available_copies: 2
+    available_copies: 5
   },
   {
     title: "To Kill a Mockingbird",
@@ -53,7 +53,7 @@ books_data = [
     genre: "Classic Fiction",
     isbn: "978-0446310789",
     total_copies: 4,
-    available_copies: 2
+    available_copies: 4
   },
   {
     title: "1984",
@@ -61,7 +61,7 @@ books_data = [
     genre: "Dystopian Fiction",
     isbn: "978-0451524935",
     total_copies: 6,
-    available_copies: 5
+    available_copies: 6
   },
   {
     title: "Pride and Prejudice",
@@ -69,7 +69,7 @@ books_data = [
     genre: "Romance",
     isbn: "978-0141439518",
     total_copies: 3,
-    available_copies: 2
+    available_copies: 3
   },
   {
     title: "The Hobbit",
@@ -77,7 +77,7 @@ books_data = [
     genre: "Fantasy",
     isbn: "978-0547928241",
     total_copies: 7,
-    available_copies: 6
+    available_copies: 7
   },
   {
     title: "The Catcher in the Rye",
@@ -85,7 +85,7 @@ books_data = [
     genre: "Coming-of-age",
     isbn: "978-0316769488",
     total_copies: 4,
-    available_copies: 0
+    available_copies: 4
   },
   {
     title: "Lord of the Flies",
@@ -101,7 +101,7 @@ books_data = [
     genre: "Political Satire",
     isbn: "978-0451526342",
     total_copies: 4,
-    available_copies: 3
+    available_copies: 4
   },
   {
     title: "The Alchemist",
@@ -117,7 +117,7 @@ books_data = [
     genre: "Dystopian Fiction",
     isbn: "978-0060850524",
     total_copies: 3,
-    available_copies: 0
+    available_copies: 3
   },
   {
     title: "The Lord of the Rings",
@@ -125,7 +125,7 @@ books_data = [
     genre: "Fantasy",
     isbn: "978-0547928210",
     total_copies: 8,
-    available_copies: 5
+    available_copies: 8
   },
   {
     title: "The Hunger Games",
@@ -133,7 +133,7 @@ books_data = [
     genre: "Young Adult Dystopian",
     isbn: "978-0439023481",
     total_copies: 6,
-    available_copies: 3
+    available_copies: 6
   },
   {
     title: "The Da Vinci Code",
@@ -141,7 +141,7 @@ books_data = [
     genre: "Mystery Thriller",
     isbn: "978-0307474278",
     total_copies: 5,
-    available_copies: 4
+    available_copies: 5
   },
   {
     title: "The Kite Runner",
@@ -149,7 +149,7 @@ books_data = [
     genre: "Historical Fiction",
     isbn: "978-1594631931",
     total_copies: 4,
-    available_copies: 2
+    available_copies: 4
   },
   {
     title: "The Book Thief",
@@ -363,6 +363,13 @@ borrowings_data.each do |borrowing_attrs|
     b.borrowed_at = borrowing_attrs[:borrowed_at]
     b.due_at = borrowing_attrs[:due_at]
   end
+end
+
+# Update available copies for all books based on actual borrowings
+puts "Updating available copies based on borrowings..."
+Book.all.each do |book|
+  active_borrowings = book.borrowings.where(returned_at: nil).count
+  book.update!(available_copies: [ book.total_copies - active_borrowings, 0 ].max)
 end
 
 puts "Demo borrowings created successfully!"

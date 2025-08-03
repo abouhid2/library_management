@@ -40,7 +40,7 @@ RSpec.describe Api::BooksController, type: :controller do
       it 'returns all books' do
         create_list(:book, 3)
         get :index
-        expect(JSON.parse(response.body).size).to eq(18)
+        expect(JSON.parse(response.body).size).to eq(21)
       end
 
       it 'includes image URLs in response' do

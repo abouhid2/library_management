@@ -15,6 +15,11 @@ const LoadingSpinner = ({
   return (
     <div className={containerClasses}>
       <div className={contentClasses}>
+        <img
+          src="/b2g_logo.png"
+          alt="Books2Go Logo"
+          className="mx-auto mb-4 w-32 h-32 object-contain"
+        />
         <div className="text-lg text-secondary font-medium">{message}</div>
         {subtitle && <div className="mt-2 text-accent text-sm">{subtitle}</div>}
       </div>

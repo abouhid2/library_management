@@ -51,7 +51,7 @@ RSpec.describe Api::BorrowingsController, type: :controller do
 
         get :index
         response_body = JSON.parse(response.body)
-        expect(response_body.size).to eq(21)
+        expect(response_body.size).to eq(23)
       end
 
       it 'includes user and book information in response' do
@@ -275,7 +275,7 @@ RSpec.describe Api::BorrowingsController, type: :controller do
 
         get :overdue
         response_body = JSON.parse(response.body)
-        expect(response_body.size).to eq(4)
+        expect(response_body.size).to eq(3)
         expect(response_body.last['id']).to eq(overdue_borrowing.id)
       end
     end

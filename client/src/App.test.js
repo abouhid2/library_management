@@ -3,7 +3,7 @@ import App from './App';
 
 test('renders library management system', () => {
   render(<App />);
-  const titleElement = screen.getByText(/Library Management System/i);
+  const titleElement = screen.getByText(/Books 2 Go/i);
   expect(titleElement).toBeInTheDocument();
 });
 

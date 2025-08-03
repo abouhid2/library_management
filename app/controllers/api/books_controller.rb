@@ -20,12 +20,12 @@ class Api::BooksController < Api::ApplicationController
       @books = @books.search_by_genre(params[:genre]) if params[:genre].present?
     end
 
-    render json: @books
+    render json: @books.as_json(methods: [ :image_url, :thumbnail_url ])
   end
 
   # GET /api/books/:id
   def show
-    render json: @book
+    render json: @book.as_json(methods: [ :image_url, :thumbnail_url ])
   end
 
   # POST /api/books
@@ -33,7 +33,7 @@ class Api::BooksController < Api::ApplicationController
     @book = Book.new(book_params)
 
     if @book.save
-      render json: @book, status: :created
+      render json: @book.as_json(methods: [ :image_url, :thumbnail_url ]), status: :created
     else
       render_errors(@book.errors.full_messages)
     end
@@ -42,7 +42,7 @@ class Api::BooksController < Api::ApplicationController
   # PUT /api/books/:id
   def update
     if @book.update(book_params)
-      render json: @book
+      render json: @book.as_json(methods: [ :image_url, :thumbnail_url ])
     else
       render_errors(@book.errors.full_messages)
     end

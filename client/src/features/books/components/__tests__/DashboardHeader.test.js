@@ -1,201 +1,118 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import DashboardHeader from "../DashboardHeader";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import DashboardHeader from "../dashboard/DashboardHeader";
 
 describe("DashboardHeader", () => {
-  const mockOnToggleOverdue = jest.fn();
+  const mockProps = {
+    isLibrarian: false,
+    overdueCount: 5,
+    showOverdue: false,
+    onToggleOverdue: jest.fn(),
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe("Librarian Dashboard Header", () => {
-    it("renders librarian dashboard title and description", () => {
-      render(
-        <DashboardHeader
-          isLibrarian={true}
-          overdueCount={3}
-          showOverdue={false}
-          onToggleOverdue={mockOnToggleOverdue}
-        />
-      );
-
-      expect(screen.getByText("Librarian Dashboard")).toBeInTheDocument();
-      expect(
-        screen.getByText("Monitor library operations and manage borrowings")
-      ).toBeInTheDocument();
-    });
-
-    it("shows overdue toggle button with correct count", () => {
-      render(
-        <DashboardHeader
-          isLibrarian={true}
-          overdueCount={5}
-          showOverdue={false}
-          onToggleOverdue={mockOnToggleOverdue}
-        />
-      );
-
-      expect(screen.getByText("Show Overdue (5)")).toBeInTheDocument();
-    });
-
-    it("shows 'Show All' button when overdue view is active", () => {
-      render(
-        <DashboardHeader
-          isLibrarian={true}
-          overdueCount={5}
-          showOverdue={true}
-          onToggleOverdue={mockOnToggleOverdue}
-        />
-      );
-
-      expect(screen.getByText("Show All")).toBeInTheDocument();
-    });
-
-    it("calls onToggleOverdue when button is clicked", () => {
-      render(
-        <DashboardHeader
-          isLibrarian={true}
-          overdueCount={3}
-          showOverdue={false}
-          onToggleOverdue={mockOnToggleOverdue}
-        />
-      );
-
-      const toggleButton = screen.getByText("Show Overdue (3)");
-      fireEvent.click(toggleButton);
-
-      expect(mockOnToggleOverdue).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe("Member Dashboard Header", () => {
-    it("renders member dashboard title and description", () => {
-      render(
-        <DashboardHeader
-          isLibrarian={false}
-          overdueCount={1}
-          showOverdue={false}
-          onToggleOverdue={mockOnToggleOverdue}
-        />
-      );
+  describe("Rendering", () => {
+    it("renders member dashboard header correctly", () => {
+      render(<DashboardHeader {...mockProps} />);
 
       expect(screen.getByText("My Dashboard")).toBeInTheDocument();
       expect(
         screen.getByText("Track your borrowed books and due dates")
       ).toBeInTheDocument();
+      expect(screen.getByText("Show Overdue (5)")).toBeInTheDocument();
     });
 
-    it("shows overdue toggle button with correct count for member", () => {
-      render(
-        <DashboardHeader
-          isLibrarian={false}
-          overdueCount={2}
-          showOverdue={false}
-          onToggleOverdue={mockOnToggleOverdue}
-        />
-      );
+    it("renders librarian dashboard header correctly", () => {
+      render(<DashboardHeader {...mockProps} isLibrarian={true} />);
 
-      expect(screen.getByText("Show Overdue (2)")).toBeInTheDocument();
+      expect(screen.getByText("Librarian Dashboard")).toBeInTheDocument();
+      expect(
+        screen.getByText("Monitor library operations and manage borrowings")
+      ).toBeInTheDocument();
+      expect(screen.getByText("Show Overdue (5)")).toBeInTheDocument();
+    });
+
+    it("displays correct overdue count", () => {
+      render(<DashboardHeader {...mockProps} overdueCount={3} />);
+
+      expect(screen.getByText("Show Overdue (3)")).toBeInTheDocument();
+    });
+
+    it("shows 'Show All' when showOverdue is true", () => {
+      render(<DashboardHeader {...mockProps} showOverdue={true} />);
+
+      expect(screen.getByText("Show All")).toBeInTheDocument();
+    });
+  });
+
+  describe("Interaction", () => {
+    it("calls onToggleOverdue when button is clicked", async () => {
+      render(<DashboardHeader {...mockProps} />);
+
+      const button = screen.getByRole("button");
+      await userEvent.click(button);
+
+      expect(mockProps.onToggleOverdue).toHaveBeenCalledTimes(1);
+    });
+
+    it("calls onToggleOverdue with event object", async () => {
+      render(<DashboardHeader {...mockProps} />);
+
+      const button = screen.getByRole("button");
+      await userEvent.click(button);
+
+      expect(mockProps.onToggleOverdue).toHaveBeenCalledWith(
+        expect.any(Object)
+      );
     });
   });
 
   describe("Button Styling", () => {
     it("applies correct styling when showing overdue", () => {
       const { container } = render(
-        <DashboardHeader
-          isLibrarian={true}
-          overdueCount={3}
-          showOverdue={true}
-          onToggleOverdue={mockOnToggleOverdue}
-        />
+        <DashboardHeader {...mockProps} showOverdue={true} />
       );
 
       const button = container.querySelector("button");
       expect(button).toHaveClass(
-        "bg-gray-600",
-        "hover:bg-gray-700",
-        "text-white"
+        "bg-neutral",
+        "hover:bg-secondary",
+        "text-primary"
       );
     });
 
     it("applies correct styling when not showing overdue", () => {
       const { container } = render(
-        <DashboardHeader
-          isLibrarian={true}
-          overdueCount={3}
-          showOverdue={false}
-          onToggleOverdue={mockOnToggleOverdue}
-        />
+        <DashboardHeader {...mockProps} showOverdue={false} />
       );
 
       const button = container.querySelector("button");
       expect(button).toHaveClass(
-        "bg-yellow-600",
-        "hover:bg-yellow-700",
+        "bg-warning",
+        "hover:bg-warning/80",
         "text-white"
       );
     });
   });
 
-  describe("Edge Cases", () => {
-    it("handles zero overdue count", () => {
-      render(
-        <DashboardHeader
-          isLibrarian={true}
-          overdueCount={0}
-          showOverdue={false}
-          onToggleOverdue={mockOnToggleOverdue}
-        />
-      );
-
-      expect(screen.getByText("Show Overdue (0)")).toBeInTheDocument();
-    });
-
-    it("handles large overdue count", () => {
-      render(
-        <DashboardHeader
-          isLibrarian={true}
-          overdueCount={999}
-          showOverdue={false}
-          onToggleOverdue={mockOnToggleOverdue}
-        />
-      );
-
-      expect(screen.getByText("Show Overdue (999)")).toBeInTheDocument();
-    });
-  });
-
   describe("Accessibility", () => {
-    it("has proper button role and clickability", () => {
-      render(
-        <DashboardHeader
-          isLibrarian={true}
-          overdueCount={3}
-          showOverdue={false}
-          onToggleOverdue={mockOnToggleOverdue}
-        />
-      );
+    it("has accessible button with proper role", () => {
+      render(<DashboardHeader {...mockProps} />);
 
       const button = screen.getByRole("button");
       expect(button).toBeInTheDocument();
-      expect(button).toBeEnabled();
     });
 
-    it("maintains focus and keyboard navigation", () => {
-      render(
-        <DashboardHeader
-          isLibrarian={true}
-          overdueCount={3}
-          showOverdue={false}
-          onToggleOverdue={mockOnToggleOverdue}
-        />
-      );
+    it("has proper heading structure", () => {
+      render(<DashboardHeader {...mockProps} />);
 
-      const button = screen.getByRole("button");
-      button.focus();
-      expect(button).toHaveFocus();
+      const heading = screen.getByRole("heading", { level: 2 });
+      expect(heading).toBeInTheDocument();
+      expect(heading).toHaveTextContent("My Dashboard");
     });
   });
 });

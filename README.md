@@ -1,4 +1,4 @@
-# Library Management System
+# Books 2 Go
 
 A full-stack library management system built with Ruby on Rails (backend) and React (frontend) with comprehensive testing coverage.
 
@@ -7,6 +7,7 @@ A full-stack library management system built with Ruby on Rails (backend) and Re
 - **Authentication**: User registration and login with JWT-based authentication
 - **Role-Based Access**: Different dashboards for Librarians and Members
 - **Book Management**: Add, edit, delete, and search books (Librarian only)
+- **Image Management**: Upload, update, and remove book cover images with validation
 - **Borrowing System**: Members can borrow and return books with overdue tracking
 - **Dashboard**: Real-time statistics and borrowing management
 - **Responsive Design**: Modern UI built with Tailwind CSS
@@ -19,6 +20,7 @@ A full-stack library management system built with Ruby on Rails (backend) and Re
 - Ruby on Rails 8.0.2 (API mode)
 - SQLite database (for easy development setup)
 - JWT authentication
+- Active Storage for image handling
 - Rack-CORS for cross-origin requests
 - RSpec for testing
 
@@ -40,7 +42,7 @@ A full-stack library management system built with Ruby on Rails (backend) and Re
 ### 1. Clone and Setup
 
 ```bash
-git clone <repository-url>
+git clone git@github.com:abouhid2/books2go.git
 cd library_management
 chmod +x setup.sh
 ./setup.sh
@@ -160,9 +162,19 @@ npm start
 - `PUT /api/books/:id` - Update book (Librarian only)
 - `DELETE /api/books/:id` - Delete book (Librarian only)
 
+**Image Management:**
+
+- Upload images when creating books (JPEG, PNG, GIF, WebP, max 5MB)
+- Update book images via PUT request
+- Remove images by setting image parameter to `nil` or empty string
+- Images are automatically processed and URLs are included in book responses:
+  - `image_url`: Full-size image URL
+  - `thumbnail_url`: 200x200px thumbnail URL
+
 ### Borrowings
 
 - `GET /api/borrowings` - List borrowings
+- `GET /api/borrowings/:id` - Get specific borrowing details
 - `POST /api/borrowings` - Create borrowing
 - `PATCH /api/borrowings/:id/return` - Return book
 - `GET /api/borrowings/overdue` - Get all overdue borrowings (Librarian only)
@@ -192,7 +204,13 @@ bundle exec rspec spec/requests/         # Request tests only
 bundle exec rspec --format documentation
 
 # Run specific test file
-bundle exec rspec spec/controllers/api/auth_controller_spec.rb
+bundle exec rspec spec/controllers/api/books_controller_spec.rb
+
+# Run with coverage report (generates HTML report in coverage/ directory)
+bundle exec rspec --format documentation
+
+# you can open it with the command
+xdg-open coverage/index.html
 ```
 
 #### Frontend Tests (Jest)
@@ -214,6 +232,9 @@ npm test -- --coverage --watchAll=false
 
 # Run specific test file
 npm test -- Dashboard.test.js
+
+# Generate coverage report
+npm test -- --coverage --watchAll=false
 ```
 
 ### Test Coverage
@@ -222,10 +243,22 @@ The project has comprehensive test coverage with:
 
 #### Backend Test Coverage
 
-- **Model Tests**: Data validations, associations, business logic
-- **Controller Tests**: API endpoints, authentication, authorization
+- **Model Tests**: Data validations, associations, business logic, image handling
+- **Controller Tests**: API endpoints, authentication, authorization, image upload/update/removal
 - **Request Tests**: Full API integration testing
 - **Factory Tests**: Test data generation
+- **Code Coverage**: 97.15% line coverage (307/316 lines covered)
+
+**Coverage Breakdown by File:**
+
+- `app/controllers/api/books_controller.rb`: 100.00% (35/35 lines)
+- `app/controllers/api/borrowings_controller.rb`: 100.00% (35/35 lines)
+- `app/controllers/api/dashboard_controller.rb`: 100.00% (35/35 lines)
+- `app/controllers/api/auth_controller.rb`: 96.30% (26/27 lines)
+- `app/controllers/api/application_controller.rb`: 94.29% (33/35 lines)
+- `app/models/book.rb`: 100.00% (35/35 lines)
+- `app/models/user.rb`: 100.00% (35/35 lines)
+- `app/models/borrowing.rb`: 100.00% (35/35 lines)
 
 #### Frontend Test Coverage
 
@@ -238,19 +271,19 @@ The project has comprehensive test coverage with:
 | Category                | Test Files | Test Suites | Individual Tests | Type              |
 | ----------------------- | ---------- | ----------- | ---------------- | ----------------- |
 | **Backend Models**      | 5          | 5           | 30               | Unit Tests        |
-| **Backend Controllers** | 4          | 4           | 25               | Unit Tests        |
-| **Backend Requests**    | 5          | 5           | 20               | Integration Tests |
+| **Backend Controllers** | 4          | 4           | 55               | Unit Tests        |
+| **Backend Requests**    | 4          | 4           | 20               | Integration Tests |
 | **Backend Factories**   | 3          | 3           | 5                | Unit Tests        |
-| **Frontend Components** | 7          | 7           | 80               | Unit Tests        |
+| **Frontend Components** | 7          | 7           | 86               | Unit Tests        |
 | **Frontend Hooks**      | 2          | 2           | 40               | Unit Tests        |
 | **Frontend App**        | 1          | 1           | 2                | Unit Tests        |
-| **Total**               | **27**     | **27**      | **202**          | **Mixed**         |
+| **Total**               | **26**     | **26**      | **238**          | **Mixed**         |
 
 **Actual Test Results:**
 
-- **Backend (RSpec)**: 321 examples, 0 failures
-- **Frontend (Jest)**: 153 tests, 10 test suites, 0 failures
-- **Combined Total**: 474 individual tests across 37 test suites
+- **Backend (RSpec)**: 342 examples, 0 failures
+- **Frontend (Jest)**: 154 tests, 10 test suites, 0 failures
+- **Combined Total**: 496 individual tests across 36 test suites
 
 ### Test Files Breakdown
 
@@ -267,6 +300,15 @@ The project has comprehensive test coverage with:
 - **Hook Tests**: `useBorrowings.test.js`, `useDashboard.test.js`
 - **App Tests**: `App.test.js`
 
+### Image Functionality Tests
+
+The backend includes comprehensive tests for the new image functionality:
+
+- **Image Upload Tests**: Creating books with images, validation (file size, type)
+- **Image Update Tests**: Replacing existing images, removing images
+- **Image Display Tests**: URL generation for full-size and thumbnail images
+- **Image Validation Tests**: File size limits (5MB), supported formats (JPEG, PNG, GIF, WebP)
+
 ## Project Structure
 
 ```
@@ -278,58 +320,64 @@ library_management/
 │   │       ├── books_controller.rb
 │   │       ├── borrowings_controller.rb
 │   │       └── dashboard_controller.rb
-│   └── models/
-│       ├── user.rb
-│       ├── book.rb
-│       └── borrowing.rb
+│   ├── models/
+│   │   ├── user.rb
+│   │   ├── book.rb
+│   │   └── borrowing.rb
+│   └── storage/                    # Active Storage for images
 ├── client/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── Dashboard.js
-│   │   │   ├── DashboardHeader.js
-│   │   │   ├── DashboardStats.js
-│   │   │   ├── BorrowingsList.js
-│   │   │   ├── BorrowingsTable.js
-│   │   │   ├── ErrorDisplay.js
+│   │   │   ├── common/
+│   │   │   │   └── LoadingSpinner.js
+│   │   │   ├── Header.js
+│   │   │   ├── NavigationTabs.js
+│   │   │   ├── SearchBar.js
+│   │   │   ├── ColorPalette.js
+│   │   │   ├── MainContent.js
+│   │   │   ├── DashboardLayout.js
 │   │   │   └── Notification.js
 │   │   ├── features/
+│   │   │   ├── auth/
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── AuthForm.js
+│   │   │   │   │   ├── Login.js
+│   │   │   │   │   └── ModeToggle.js
+│   │   │   │   └── hooks/
+│   │   │   │       └── useAuth.js
 │   │   │   └── books/
 │   │   │       ├── components/
+│   │   │       │   ├── book-grid/
+│   │   │       │   ├── dashboard/
+│   │   │       │   ├── form/
+│   │   │       │   ├── BookForm.js
+│   │   │       │   ├── Books.js
+│   │   │       │   ├── Dashboard.js
+│   │   │       │   └── BookHeader.js
 │   │   │       └── hooks/
+│   │   │           ├── useBookForm.js
+│   │   │           ├── useDashboard.js
+│   │   │           ├── useBorrowings.js
+│   │   │           └── useBooks.js
 │   │   ├── services/
 │   │   │   └── api.js
 │   │   └── App.js
 │   └── package.json
 ├── spec/
 │   ├── controllers/
+│   │   └── api/
 │   ├── models/
 │   ├── requests/
-│   └── factories/
+│   │   └── api/
+│   ├── factories/
+│   └── fixtures/
+│       └── files/                  # Test images for image functionality
 ├── config/
 │   ├── database.yml
 │   ├── routes.rb
 │   └── initializers/
 │       └── cors.rb
 └── README.md
-```
-
-## Development
-
-### Database Reset
-
-```bash
-rails db:reset
-```
-
-### Environment Variables
-
-Create a `.env` file in the root directory:
-
-```
-DB_USERNAME=library_user
-DB_PASSWORD=library_password
-DB_HOST=localhost
-DB_PORT=3306
 ```
 
 ## Contributing

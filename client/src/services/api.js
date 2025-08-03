@@ -50,9 +50,76 @@ export const booksAPI = {
 
   getById: (id) => api.get(`/books/${id}`),
 
-  create: (bookData) => api.post("/books", { book: bookData }),
+  create: (bookData) => {
+    // Check if there's an image file to upload
+    if (bookData.image && bookData.image instanceof File) {
+      const formData = new FormData();
 
-  update: (id, bookData) => api.put(`/books/${id}`, { book: bookData }),
+      // Add all book data to form data
+      Object.keys(bookData).forEach((key) => {
+        if (key === "image") {
+          formData.append("book[image]", bookData.image);
+        } else {
+          formData.append(`book[${key}]`, bookData[key]);
+        }
+      });
+
+      // Create a new axios instance for multipart/form-data
+      const multipartApi = axios.create({
+        baseURL: API_BASE_URL,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // Add auth token to multipart requests
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        multipartApi.defaults.headers.Authorization = `Bearer ${token}`;
+      }
+
+      return multipartApi.post("/books", formData);
+    } else {
+      // Regular JSON request for books without images
+      return api.post("/books", { book: bookData });
+    }
+  },
+
+  update: (id, bookData) => {
+    // Check if there's an image file to upload
+    if (bookData.image && bookData.image instanceof File) {
+      const formData = new FormData();
+
+      // Add all book data to form data
+      Object.keys(bookData).forEach((key) => {
+        if (key === "image") {
+          formData.append("book[image]", bookData.image);
+        } else {
+          formData.append(`book[${key}]`, bookData[key]);
+        }
+      });
+
+      // Create a new axios instance for multipart/form-data
+      const multipartApi = axios.create({
+        baseURL: API_BASE_URL,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // Add auth token to multipart requests
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        multipartApi.defaults.headers.Authorization = `Bearer ${token}`;
+      }
+
+      return multipartApi.put(`/books/${id}`, formData);
+    } else {
+      // Remove the image property if it's not a File to avoid sending it
+      const { image, ...bookDataWithoutImage } = bookData;
+      return api.put(`/books/${id}`, { book: bookDataWithoutImage });
+    }
+  },
 
   delete: (id) => api.delete(`/books/${id}`),
 };

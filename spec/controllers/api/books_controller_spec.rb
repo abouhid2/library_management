@@ -22,6 +22,9 @@ RSpec.describe Api::BooksController, type: :controller do
       total_copies: -1
     }
   end
+  let(:test_image) { fixture_file_upload('test_image.jpg', 'image/jpeg') }
+  let(:large_image) { fixture_file_upload('large_image.jpg', 'image/jpeg') }
+  let(:invalid_file) { fixture_file_upload('text_file.txt', 'text/plain') }
 
   describe 'GET #index' do
     context 'when user is authenticated' do
@@ -38,6 +41,29 @@ RSpec.describe Api::BooksController, type: :controller do
         create_list(:book, 3)
         get :index
         expect(JSON.parse(response.body).size).to eq(3)
+      end
+
+      it 'includes image URLs in response' do
+        book_with_image = create(:book)
+        book_with_image.image.attach(test_image)
+
+        get :index
+        response_body = JSON.parse(response.body)
+        book_response = response_body.find { |b| b['id'] == book_with_image.id }
+
+        expect(book_response['image_url']).to be_present
+        expect(book_response['thumbnail_url']).to be_present
+      end
+
+      it 'returns nil image URLs for books without images' do
+        book_without_image = create(:book)
+
+        get :index
+        response_body = JSON.parse(response.body)
+        book_response = response_body.find { |b| b['id'] == book_without_image.id }
+
+        expect(book_response['image_url']).to be_nil
+        expect(book_response['thumbnail_url']).to be_nil
       end
 
       context 'with search parameters' do
@@ -63,6 +89,27 @@ RSpec.describe Api::BooksController, type: :controller do
           response_body = JSON.parse(response.body)
           expect(response_body.size).to eq(1)
           expect(response_body.first['genre']).to eq('Non-Fiction')
+        end
+
+        it 'performs general search across all fields' do
+          get :index, params: { search: 'Gatsby' }
+          response_body = JSON.parse(response.body)
+          expect(response_body.size).to eq(1)
+          expect(response_body.first['title']).to eq('The Great Gatsby')
+        end
+
+        it 'performs case-insensitive general search' do
+          get :index, params: { search: 'gatsby' }
+          response_body = JSON.parse(response.body)
+          expect(response_body.size).to eq(1)
+          expect(response_body.first['title']).to eq('The Great Gatsby')
+        end
+
+        it 'prioritizes general search over specific field searches' do
+          get :index, params: { search: 'Fitzgerald', title: 'Science' }
+          response_body = JSON.parse(response.body)
+          expect(response_body.size).to eq(1)
+          expect(response_body.first['author']).to eq('Fitzgerald')
         end
       end
     end
@@ -91,6 +138,27 @@ RSpec.describe Api::BooksController, type: :controller do
         response_body = JSON.parse(response.body)
         expect(response_body['id']).to eq(book.id)
         expect(response_body['title']).to eq(book.title)
+      end
+
+      it 'includes image URLs for book with image' do
+        book_with_image = create(:book)
+        book_with_image.image.attach(test_image)
+
+        get :show, params: { id: book_with_image.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response_body['image_url']).to be_present
+        expect(response_body['thumbnail_url']).to be_present
+        expect(response_body['image_url']).to include('test_image.jpg')
+        expect(response_body['thumbnail_url']).to include('test_image.jpg')
+      end
+
+      it 'returns nil image URLs for book without image' do
+        get :show, params: { id: book.id }
+        response_body = JSON.parse(response.body)
+
+        expect(response_body['image_url']).to be_nil
+        expect(response_body['thumbnail_url']).to be_nil
       end
 
       it 'returns not found for non-existent book' do
@@ -131,6 +199,30 @@ RSpec.describe Api::BooksController, type: :controller do
           expect(response_body['title']).to eq('Test Book')
           expect(response_body['author']).to eq('Test Author')
         end
+
+        context 'with image upload' do
+          it 'creates a book with an image' do
+            expect {
+              post :create, params: { book: valid_attributes.merge(image: test_image) }
+            }.to change(Book, :count).by(1)
+          end
+
+          it 'attaches the image to the book' do
+            post :create, params: { book: valid_attributes.merge(image: test_image) }
+            created_book = Book.last
+            expect(created_book.image).to be_attached
+            expect(created_book.image.filename.to_s).to eq('test_image.jpg')
+          end
+
+          it 'returns image URLs in the response' do
+            post :create, params: { book: valid_attributes.merge(image: test_image) }
+            response_body = JSON.parse(response.body)
+            expect(response_body['image_url']).to be_present
+            expect(response_body['thumbnail_url']).to be_present
+            expect(response_body['image_url']).to include('test_image.jpg')
+            expect(response_body['thumbnail_url']).to include('test_image.jpg')
+          end
+        end
       end
 
       context 'with invalid parameters' do
@@ -149,6 +241,24 @@ RSpec.describe Api::BooksController, type: :controller do
           post :create, params: { book: invalid_attributes }
           response_body = JSON.parse(response.body)
           expect(response_body['errors']).to be_present
+        end
+
+        context 'with invalid image' do
+          it 'rejects image that is too large' do
+            post :create, params: { book: valid_attributes.merge(image: large_image) }
+            expect(response).to have_http_status(:unprocessable_entity)
+
+            response_body = JSON.parse(response.body)
+            expect(response_body['errors']).to include('Image is too big (should be less than 5MB)')
+          end
+
+          it 'rejects invalid file type' do
+            post :create, params: { book: valid_attributes.merge(image: invalid_file) }
+            expect(response).to have_http_status(:unprocessable_entity)
+
+            response_body = JSON.parse(response.body)
+            expect(response_body['errors']).to include('Image must be a JPEG, PNG, GIF, or WebP')
+          end
         end
       end
     end
@@ -208,6 +318,73 @@ RSpec.describe Api::BooksController, type: :controller do
           put :update, params: { id: book.id, book: new_attributes }
           response_body = JSON.parse(response.body)
           expect(response_body['title']).to eq('Updated Book Title')
+        end
+
+        context 'with image updates' do
+          let!(:book_with_image) { create(:book) }
+
+          before do
+            book_with_image.image.attach(test_image)
+          end
+
+          it 'updates the book image' do
+            new_image = fixture_file_upload('test_image.jpg', 'image/jpeg')
+            put :update, params: { id: book_with_image.id, book: { image: new_image } }
+
+            book_with_image.reload
+            expect(book_with_image.image).to be_attached
+          end
+
+          it 'returns updated image URLs in response' do
+            new_image = fixture_file_upload('test_image.jpg', 'image/jpeg')
+            put :update, params: { id: book_with_image.id, book: { image: new_image } }
+
+            response_body = JSON.parse(response.body)
+            expect(response_body['image_url']).to be_present
+            expect(response_body['thumbnail_url']).to be_present
+          end
+
+          it 'removes image when image parameter is set to nil' do
+            put :update, params: { id: book_with_image.id, book: { image: nil } }
+
+            book_with_image.reload
+            expect(book_with_image.image).not_to be_attached
+          end
+
+          it 'returns nil image URLs when image is removed' do
+            put :update, params: { id: book_with_image.id, book: { image: nil } }
+
+            response_body = JSON.parse(response.body)
+            expect(response_body['image_url']).to be_nil
+            expect(response_body['thumbnail_url']).to be_nil
+          end
+
+          it 'removes image when image parameter is set to empty string' do
+            put :update, params: { id: book_with_image.id, book: { image: '' } }
+
+            book_with_image.reload
+            expect(book_with_image.image).not_to be_attached
+          end
+        end
+
+        context 'with invalid image updates' do
+          let!(:book_with_image) { create(:book) }
+
+          it 'rejects image that is too large' do
+            put :update, params: { id: book_with_image.id, book: { image: large_image } }
+            expect(response).to have_http_status(:unprocessable_entity)
+
+            response_body = JSON.parse(response.body)
+            expect(response_body['errors']).to include('Image is too big (should be less than 5MB)')
+          end
+
+          it 'rejects invalid file type' do
+            put :update, params: { id: book_with_image.id, book: { image: invalid_file } }
+            expect(response).to have_http_status(:unprocessable_entity)
+
+            response_body = JSON.parse(response.body)
+            expect(response_body['errors']).to include('Image must be a JPEG, PNG, GIF, or WebP')
+          end
         end
       end
 

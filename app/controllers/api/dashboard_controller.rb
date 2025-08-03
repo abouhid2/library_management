@@ -6,6 +6,7 @@ class Api::DashboardController < Api::ApplicationController
   def librarian
     stats = {
       total_books: Book.count,
+      total_copies: Book.sum(:total_copies),
       total_borrowed: Book.sum(:total_copies) - Book.sum(:available_copies),
       books_due_today: Borrowing.due_today.count,
       overdue_count: Borrowing.overdue.count,

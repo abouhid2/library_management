@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { dashboardAPI } from "../../../services/api";
 
 export const useDashboard = (isLibrarian) => {
@@ -14,7 +14,7 @@ export const useDashboard = (isLibrarian) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       setLoading(true);
       const response = isLibrarian
@@ -29,12 +29,12 @@ export const useDashboard = (isLibrarian) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isLibrarian]);
 
   // Fetch stats on mount
   useEffect(() => {
     fetchStats();
-  }, [isLibrarian]);
+  }, [fetchStats]);
 
   return {
     stats,

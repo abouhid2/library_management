@@ -36,19 +36,89 @@ RSpec.describe Book, type: :model do
 
   describe 'image functionality' do
     describe '#image_url' do
-      it 'returns the image URL when image is present' do
-        book = build(:book, image: 'https://example.com/book-cover.jpg')
-        expect(book.image_url).to eq('https://example.com/book-cover.jpg')
-      end
-
-      it 'returns nil when image is not present' do
-        book = build(:book, image: nil)
+      it 'returns nil when no image is attached' do
+        book = build(:book)
         expect(book.image_url).to be_nil
       end
 
-      it 'returns nil when image is empty string' do
-        book = build(:book, image: '')
-        expect(book.image_url).to be_nil
+      it 'returns a URL when image is attached' do
+        book = create(:book)
+        book.image.attach(
+          io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'test_image.jpg')),
+          filename: 'test_image.jpg',
+          content_type: 'image/jpeg'
+        )
+        expect(book.image_url).to be_present
+        expect(book.image_url).to include('rails/active_storage')
+      end
+    end
+
+    describe '#thumbnail_url' do
+      it 'returns nil when no image is attached' do
+        book = build(:book)
+        expect(book.thumbnail_url).to be_nil
+      end
+
+      it 'returns a thumbnail URL when image is attached' do
+        book = create(:book)
+        book.image.attach(
+          io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'test_image.jpg')),
+          filename: 'test_image.jpg',
+          content_type: 'image/jpeg'
+        )
+        expect(book.thumbnail_url).to be_present
+        expect(book.thumbnail_url).to include('rails/active_storage')
+      end
+    end
+
+    describe 'image validation' do
+      it 'accepts valid image files' do
+        book = build(:book)
+        book.image.attach(
+          io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'test_image.jpg')),
+          filename: 'test_image.jpg',
+          content_type: 'image/jpeg'
+        )
+        expect(book).to be_valid
+      end
+
+      it 'rejects files that are too large' do
+        book = build(:book)
+        # Create a large file (simulate > 5MB)
+        large_file = Tempfile.new([ 'large', '.jpg' ])
+        large_file.write('x' * 6.megabytes)
+        large_file.rewind
+
+        book.image.attach(
+          io: large_file,
+          filename: 'large_image.jpg',
+          content_type: 'image/jpeg'
+        )
+
+        expect(book).not_to be_valid
+        expect(book.errors[:image]).to include('is too big (should be less than 5MB)')
+
+        large_file.close
+        large_file.unlink
+      end
+
+      it 'rejects invalid file types' do
+        book = build(:book)
+        invalid_file = Tempfile.new([ 'invalid', '.txt' ])
+        invalid_file.write('This is not an image')
+        invalid_file.rewind
+
+        book.image.attach(
+          io: invalid_file,
+          filename: 'invalid.txt',
+          content_type: 'text/plain'
+        )
+
+        expect(book).not_to be_valid
+        expect(book.errors[:image]).to include('must be a JPEG, PNG, GIF, or WebP')
+
+        invalid_file.close
+        invalid_file.unlink
       end
     end
   end

@@ -1,6 +1,6 @@
 import React from "react";
 import Books from "../features/books/components/Books";
-import Dashboard from "../features/books/components/Dashboard";
+import { Dashboard } from "../features/books/components/dashboard";
 
 const MainContent = ({ activeTab, user, searchQuery }) => {
   return (

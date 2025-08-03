@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import BookForm from "./BookForm";
 import BookHeader from "./BookHeader";
-import BookList from "./BookList";
-import ErrorDisplay from "./ErrorDisplay";
+import { BookGrid } from "./book-grid";
+import ErrorDisplay from "./form/ErrorDisplay";
 import Notification from "../../../components/Notification";
+import LoadingSpinner from "../../../components/common/LoadingSpinner";
 import { useBooks } from "../hooks/useBooks";
 import { useBorrowings } from "../hooks/useBorrowings";
 
@@ -116,11 +117,7 @@ const Books = ({ user, searchQuery = "" }) => {
   };
 
   if (loading || borrowingsLoading) {
-    return (
-      <div className="flex justify-center items-center py-8">
-        <div className="text-lg text-gray-600">Loading books...</div>
-      </div>
-    );
+    return <LoadingSpinner message="Loading books..." />;
   }
 
   return (
@@ -144,9 +141,8 @@ const Books = ({ user, searchQuery = "" }) => {
         />
       )}
 
-      <BookList
+      <BookGrid
         books={books}
-        searchQuery={searchQuery}
         isLibrarian={isLibrarian}
         onEdit={handleEdit}
         onDelete={handleDelete}

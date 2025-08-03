@@ -29,7 +29,7 @@ export const useFormErrors = (fieldMapping = {}) => {
 
   /**
    * Parse backend validation errors and map them to form fields
-   * @param {Array} backendErrors - Array of error messages from backend
+   * @param {Array|string|Object} backendErrors - Error messages from backend
    * @param {Object} customMapping - Additional field mappings
    */
   const parseBackendErrors = useCallback(
@@ -41,13 +41,47 @@ export const useFormErrors = (fieldMapping = {}) => {
       const variations = {
         "total copies": "total_copies",
         "available copies": "available_copies",
+        "book title": "title",
+        "book author": "author",
+        "book genre": "genre",
+        title: "title",
+        author: "author",
+        genre: "genre",
         isbn: "isbn",
         email: "email",
         password: "password",
         "password confirmation": "password_confirmation",
       };
 
-      backendErrors.forEach((errorMessage) => {
+      // Handle different input types
+      let errorsArray = [];
+
+      if (Array.isArray(backendErrors)) {
+        errorsArray = backendErrors;
+      } else if (typeof backendErrors === "string") {
+        errorsArray = [backendErrors];
+      } else if (backendErrors && typeof backendErrors === "object") {
+        // If it's an object, try to extract error messages
+        if (backendErrors.errors && Array.isArray(backendErrors.errors)) {
+          errorsArray = backendErrors.errors;
+        } else if (backendErrors.error) {
+          errorsArray = [backendErrors.error];
+        } else {
+          // If we can't extract errors, treat the whole object as a general error
+          errorsArray = [JSON.stringify(backendErrors)];
+        }
+      } else if (backendErrors === null || backendErrors === undefined) {
+        errorsArray = [];
+      } else {
+        // Fallback for any other type
+        errorsArray = [String(backendErrors)];
+      }
+
+      errorsArray.forEach((errorMessage) => {
+        if (!errorMessage || typeof errorMessage !== "string") {
+          return; // Skip invalid error messages
+        }
+
         let matchedField = null;
 
         // First, try exact field name matching (case insensitive)

@@ -38,6 +38,14 @@ const BookForm = ({
             isInline={true}
           />
 
+          <ImageUpload
+            onImageChange={handleImageChange}
+            onImageRemove={handleImageRemove}
+            imagePreview={imagePreview}
+            error={fieldErrors.image}
+            isInline={true}
+          />
+
           <FormActions
             onCancel={onCancel}
             isSubmitting={isSubmitting}

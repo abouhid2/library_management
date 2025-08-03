@@ -115,8 +115,9 @@ export const booksAPI = {
 
       return multipartApi.put(`/books/${id}`, formData);
     } else {
-      // Regular JSON request for books without images
-      return api.put(`/books/${id}`, { book: bookData });
+      // Remove the image property if it's not a File to avoid sending it
+      const { image, ...bookDataWithoutImage } = bookData;
+      return api.put(`/books/${id}`, { book: bookDataWithoutImage });
     }
   },
 

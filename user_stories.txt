@@ -129,9 +129,7 @@
 - System stores images securely on the server
 - Images are automatically resized and optimized for web display
 - Book cover images are displayed in the book grid view
-- Book cover images are displayed in book detail views
 - System provides a default placeholder image for books without covers
 - Image upload supports drag-and-drop functionality
-- File size limits are enforced (max 5MB per image)
 - Only Librarian users can upload and manage book images
 - Images are displayed in appropriate aspect ratios across different screen sizes

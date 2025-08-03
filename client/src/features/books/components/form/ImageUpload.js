@@ -8,6 +8,7 @@ const ImageUpload = ({
   accept = "image/jpeg,image/png,image/gif,image/webp",
   maxSize = 5 * 1024 * 1024, // 5MB
   id = "image-upload",
+  isInline = false,
 }) => {
   const [dragActive, setDragActive] = useState(false);
 
@@ -100,10 +101,16 @@ const ImageUpload = ({
         onDrop={handleDrop}
         onClick={() => document.getElementById(id).click()}
       >
-        <div className="flex items-center justify-center py-4">
+        <div
+          className={`flex items-center justify-center ${
+            isInline ? "py-2" : "py-4"
+          }`}
+        >
           <div className="text-center">
             <svg
-              className="mx-auto h-8 w-8 text-gray-400"
+              className={`mx-auto ${
+                isInline ? "h-6 w-6" : "h-8 w-8"
+              } text-gray-400`}
               stroke="currentColor"
               fill="none"
               viewBox="0 0 48 48"
@@ -115,16 +122,22 @@ const ImageUpload = ({
                 strokeLinejoin="round"
               />
             </svg>
-            <p className="mt-2 text-sm text-gray-600">
+            <p
+              className={`mt-2 ${
+                isInline ? "text-xs" : "text-sm"
+              } text-gray-600`}
+            >
               <span className="font-medium text-blue-600 hover:text-blue-500">
                 Click to upload
               </span>{" "}
               or drag and drop
             </p>
-            <p className="text-xs text-gray-500">
-              Accepted formats: JPEG, PNG, GIF, WebP (max{" "}
-              {Math.round(maxSize / (1024 * 1024))}MB)
-            </p>
+            {!isInline && (
+              <p className="text-xs text-gray-500">
+                Accepted formats: JPEG, PNG, GIF, WebP (max{" "}
+                {Math.round(maxSize / (1024 * 1024))}MB)
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -133,15 +146,19 @@ const ImageUpload = ({
 
       {/* Image Preview */}
       {imagePreview && (
-        <div className="mt-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Image Preview
-          </label>
+        <div className={`${isInline ? "mt-2" : "mt-4"}`}>
+          {!isInline && (
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Image Preview
+            </label>
+          )}
           <div className="relative inline-block">
             <img
               src={imagePreview}
               alt="Book cover preview"
-              className="w-32 h-40 object-cover rounded-lg border border-gray-300"
+              className={`${
+                isInline ? "w-20 h-24" : "w-32 h-40"
+              } object-cover rounded-lg border border-gray-300`}
             />
             <button
               type="button"

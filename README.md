@@ -39,41 +39,116 @@ A full-stack library management system built with Ruby on Rails (backend) and Re
 
 ## Quick Start
 
+### Prerequisites
+
+Before you begin, make sure you have the following installed:
+
+- **Ruby 3.0+** (recommended: 3.3.0)
+- **Node.js 16+**
+- **Rails 8.0.2** (will be installed via bundler)
+
 ### 1. Clone and Setup
 
 ```bash
+# Clone the repository
 git clone git@github.com:abouhid2/books2go.git
-cd library_management
+cd Books2Go
+
+# Make the setup script executable
 chmod +x setup.sh
+
+# Run the setup script (this will take a few minutes)
 ./setup.sh
 ```
 
-The `setup.sh` script will:
+**What the setup script does automatically:**
 
-- Install Ruby dependencies (`bundle install`)
-- Set up the database (`rails db:create db:migrate db:seed`)
-- Install Node.js dependencies (`cd client && npm install`)
-- Set up test data
+- ✅ Installs Ruby dependencies (`bundle install`)
+- ✅ Creates missing configuration files (`database.yml`, `application.yml`)
+- ✅ Sets up the database with demo data
+- ✅ Installs Node.js dependencies
+- ✅ Creates demo users and books for testing
+
+**Demo Login Credentials (created automatically):**
+
+- **Librarian**: `librarian@library.com` / `password123`
+- **Member**: `member@library.com` / `password123`
 
 ### 2. Start the Application
 
-```bash
-# Terminal 1: Start Rails server
-rails server -p 3001
+**Open two terminal windows/tabs:**
 
-# Terminal 2: Start React app
+**Terminal 1 - Start the Rails API server:**
+
+```bash
+bundle exec rails server -p 3001
+```
+
+**Terminal 2 - Start the React frontend:**
+
+```bash
 cd client
 npm start
 ```
 
-That's it! Your application will be running at:
+### 3. Access the Application
 
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:3001
+Once both servers are running, you can access:
 
-## Manual Setup (Alternative)
+- **Frontend (React App)**: http://localhost:3000
+- **Backend API**: http://localhost:3001
 
-If you prefer to set up manually or the setup script fails:
+**Login with the demo credentials:**
+
+- **Librarian**: `librarian@library.com` / `password123`
+- **Member**: `member@library.com` / `password123`
+
+### 4. What You'll See
+
+The application includes:
+
+- 📚 **15 demo books** with cover images
+- 👥 **5 demo users** (1 librarian, 4 members)
+- 📖 **16 active borrowings** for testing
+- ⏰ **3 overdue borrowings** to test overdue functionality
+
+## Troubleshooting
+
+### Common Issues
+
+**1. "Rails command not found"**
+
+```bash
+# Make sure you're using bundler
+bundle exec rails --version
+```
+
+**2. "Database connection error"**
+
+```bash
+# Recreate the database
+bundle exec rails db:drop db:create db:migrate db:seed
+```
+
+**3. "Port already in use"**
+
+```bash
+# Kill the existing process or use a different port
+bundle exec rails server -p 3002
+```
+
+**4. "Node modules not found"**
+
+```bash
+# Reinstall Node dependencies
+cd client
+rm -rf node_modules package-lock.json
+npm install
+```
+
+### Manual Setup (Alternative)
+
+If the setup script fails, you can set up manually:
 
 #### Install Ruby Dependencies
 
@@ -83,23 +158,11 @@ bundle install
 
 #### Database Setup
 
-The application uses SQLite for development, so no additional database setup is required!
-
 ```bash
-rails db:create
-rails db:migrate
-rails db:seed
+bundle exec rails db:create
+bundle exec rails db:migrate
+bundle exec rails db:seed
 ```
-
-#### Start Rails Server
-
-```bash
-rails server -p 3001
-```
-
-The Rails API will be available at `http://localhost:3001`
-
-### 3. Frontend Setup
 
 #### Install Node Dependencies
 
@@ -108,42 +171,15 @@ cd client
 npm install
 ```
 
-#### Start React Development Server
+#### Start the Application
 
 ```bash
-npm start
+# Terminal 1
+bundle exec rails server -p 3001
+
+# Terminal 2
+cd client && npm start
 ```
-
-The React app will be available at `http://localhost:3000`
-
-## Starting the Application
-
-After setup, you can start the application with these simple commands:
-
-### Start Rails Server
-
-```bash
-rails server -p 3001
-```
-
-### Start React App (in a new terminal)
-
-```bash
-cd client
-npm start
-```
-
-## Demo Credentials
-
-### Librarian Account
-
-- Email: `librarian@library.com`
-- Password: `password123`
-
-### Member Account
-
-- Email: `member@library.com`
-- Password: `password123`
 
 ## API Endpoints
 

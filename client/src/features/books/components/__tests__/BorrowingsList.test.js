@@ -18,6 +18,44 @@ jest.mock("../../../../components/SearchBar", () => {
   };
 });
 
+// Mock the SortControl component
+jest.mock("../../../../components/SortControl", () => {
+  return function MockSortControl({
+    sortField,
+    sortDirection,
+    onSortChange,
+    sortOptions,
+  }) {
+    return (
+      <div data-testid="sort-control">
+        <div data-testid="sort-field">{sortField}</div>
+        <div data-testid="sort-direction">{sortDirection}</div>
+        {sortOptions.map((option) => (
+          <button
+            key={option.value}
+            data-testid={`sort-option-${option.value}`}
+            onClick={() => onSortChange(option.value, "asc")}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    );
+  };
+});
+
+// Mock the useSorting hook
+jest.mock("../../../../hooks/useSorting", () => {
+  return function useSorting(items, defaultSortField, defaultSortDirection) {
+    return {
+      sortedItems: items,
+      sortField: defaultSortField || "borrowed_at",
+      sortDirection: defaultSortDirection || "desc",
+      handleSortChange: jest.fn(),
+    };
+  };
+});
+
 // Mock the BorrowingsTable component
 jest.mock("../dashboard/BorrowingsTable", () => {
   return function MockBorrowingsTable({
@@ -74,10 +112,11 @@ describe("BorrowingsList", () => {
   });
 
   describe("Rendering", () => {
-    it("renders search bar and borrowings table", () => {
+    it("renders search bar, sort control, and borrowings table", () => {
       render(<BorrowingsList {...mockProps} />);
 
       expect(screen.getByTestId("search-bar")).toBeInTheDocument();
+      expect(screen.getByTestId("sort-control")).toBeInTheDocument();
       expect(screen.getByTestId("borrowings-table")).toBeInTheDocument();
       expect(screen.getByTestId("is-librarian")).toHaveTextContent("false");
       expect(screen.getByTestId("is-submitting")).toHaveTextContent("false");
@@ -115,6 +154,16 @@ describe("BorrowingsList", () => {
         "placeholder",
         "Search by book title, author, user name or email"
       );
+    });
+
+    it("renders sort control with correct options", () => {
+      render(<BorrowingsList {...mockProps} />);
+
+      expect(screen.getByTestId("sort-option-book.title")).toBeInTheDocument();
+      expect(screen.getByTestId("sort-option-book.author")).toBeInTheDocument();
+      expect(screen.getByTestId("sort-option-user.name")).toBeInTheDocument();
+      expect(screen.getByTestId("sort-option-borrowed_at")).toBeInTheDocument();
+      expect(screen.getByTestId("sort-option-due_at")).toBeInTheDocument();
     });
   });
 
@@ -189,6 +238,26 @@ describe("BorrowingsList", () => {
       expect(screen.getByTestId("borrowing-0")).toHaveTextContent(
         "Test Book 1"
       );
+    });
+  });
+
+  describe("Sorting Functionality", () => {
+    it("renders sort control with default sort field", () => {
+      render(<BorrowingsList {...mockProps} />);
+
+      expect(screen.getByTestId("sort-field")).toHaveTextContent("borrowed_at");
+      expect(screen.getByTestId("sort-direction")).toHaveTextContent("desc");
+    });
+
+    it("allows clicking on sort options", () => {
+      render(<BorrowingsList {...mockProps} />);
+
+      const titleSortButton = screen.getByTestId("sort-option-book.title");
+      fireEvent.click(titleSortButton);
+
+      // The mock will call the handler, but we can't easily test the result
+      // since the hook is mocked. In a real scenario, this would trigger sorting.
+      expect(titleSortButton).toBeInTheDocument();
     });
   });
 

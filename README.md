@@ -69,11 +69,6 @@ chmod +x setup.sh
 - ✅ Installs Node.js dependencies
 - ✅ Creates demo users and books for testing
 
-**Demo Login Credentials (created automatically):**
-
-- **Librarian**: `librarian@library.com` / `password123`
-- **Member**: `member@library.com` / `password123`
-
 ### 2. Start the Application
 
 **Open two terminal windows/tabs:**

@@ -11,7 +11,7 @@ RAILS_ENV: "development"
 SECRET_KEY_BASE: ""
 
 # Application settings
-APP_NAME: "Library Management System"
+APP_NAME: "Books 2 Go"
 APP_HOST: "localhost"
 APP_PORT: "3001"
 

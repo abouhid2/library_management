@@ -8,7 +8,7 @@ const DashboardStats = ({ stats, isLibrarian }) => {
     books_due_today: booksDueToday = 0,
     overdue_count: overdueCount = 0,
     my_borrowed: myBorrowed = 0,
-  } = stats;
+  } = stats || {};
 
   const statCards = isLibrarian
     ? [

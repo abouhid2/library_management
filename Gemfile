@@ -68,4 +68,7 @@ group :development, :test do
 
   # Use shoulda-matchers for validation testing
   gem "shoulda-matchers"
+
+  # Use SimpleCov for test coverage
+  gem "simplecov", require: false
 end

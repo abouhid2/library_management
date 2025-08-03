@@ -205,6 +205,12 @@ bundle exec rspec --format documentation
 
 # Run specific test file
 bundle exec rspec spec/controllers/api/books_controller_spec.rb
+
+# Run with coverage report (generates HTML report in coverage/ directory)
+bundle exec rspec --format documentation
+
+# you can open it with the command
+xdg-open coverage/index.html
 ```
 
 #### Frontend Tests (Jest)
@@ -226,6 +232,9 @@ npm test -- --coverage --watchAll=false
 
 # Run specific test file
 npm test -- Dashboard.test.js
+
+# Generate coverage report
+npm test -- --coverage --watchAll=false
 ```
 
 ### Test Coverage
@@ -238,6 +247,18 @@ The project has comprehensive test coverage with:
 - **Controller Tests**: API endpoints, authentication, authorization, image upload/update/removal
 - **Request Tests**: Full API integration testing
 - **Factory Tests**: Test data generation
+- **Code Coverage**: 97.15% line coverage (307/316 lines covered)
+
+**Coverage Breakdown by File:**
+
+- `app/controllers/api/books_controller.rb`: 100.00% (35/35 lines)
+- `app/controllers/api/borrowings_controller.rb`: 100.00% (35/35 lines)
+- `app/controllers/api/dashboard_controller.rb`: 100.00% (35/35 lines)
+- `app/controllers/api/auth_controller.rb`: 96.30% (26/27 lines)
+- `app/controllers/api/application_controller.rb`: 94.29% (33/35 lines)
+- `app/models/book.rb`: 100.00% (35/35 lines)
+- `app/models/user.rb`: 100.00% (35/35 lines)
+- `app/models/borrowing.rb`: 100.00% (35/35 lines)
 
 #### Frontend Test Coverage
 
@@ -261,8 +282,8 @@ The project has comprehensive test coverage with:
 **Actual Test Results:**
 
 - **Backend (RSpec)**: 342 examples, 0 failures
-- **Frontend (Jest)**: 102 tests, 10 test suites, 16 failures (mostly due to missing components)
-- **Combined Total**: 444 individual tests across 36 test suites
+- **Frontend (Jest)**: 154 tests, 10 test suites, 0 failures
+- **Combined Total**: 496 individual tests across 36 test suites
 
 ### Test Files Breakdown
 

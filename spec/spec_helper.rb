@@ -13,6 +13,20 @@
 # it.
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+# SimpleCov must be loaded before any other code
+require 'simplecov'
+SimpleCov.start 'rails' do
+  add_filter '/spec/'
+  add_filter '/config/'
+  add_filter '/vendor/'
+  add_filter '/db/'
+  add_filter '/bin/'
+  add_filter '/lib/'
+
+  add_group 'Models', 'app/models'
+  add_group 'Controllers', 'app/controllers'
+end
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

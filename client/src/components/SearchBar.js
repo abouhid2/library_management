@@ -1,12 +1,16 @@
 import React from "react";
 
-const SearchBar = ({ searchQuery, onSearchChange }) => {
+const SearchBar = ({
+  searchQuery,
+  onSearchChange,
+  placeholder = "Search...",
+}) => {
   return (
     <div className="bg-surface border-b border-neutral">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="max-w-md">
           <label htmlFor="search" className="sr-only">
-            Search books
+            Search
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -15,6 +19,7 @@ const SearchBar = ({ searchQuery, onSearchChange }) => {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                data-testid="search-icon"
               >
                 <path
                   strokeLinecap="round"
@@ -28,7 +33,7 @@ const SearchBar = ({ searchQuery, onSearchChange }) => {
               id="search"
               name="search"
               className="block w-full pl-10 pr-3 py-2 border border-neutral rounded-md leading-5 bg-white placeholder-neutral focus:outline-none focus:placeholder-secondary focus:ring-1 focus:ring-highlight focus:border-highlight sm:text-sm"
-              placeholder="Search by title, author or genre"
+              placeholder={placeholder}
               type="search"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}

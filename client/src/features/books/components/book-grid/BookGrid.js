@@ -3,8 +3,10 @@ import BookFilter from "./BookFilter";
 import BookCard from "./BookCard";
 import Pagination from "./Pagination";
 import EmptyState from "./EmptyState";
+import SortControl from "../../../../components/SortControl";
 import useBookFilter from "./useBookFilter";
 import usePagination from "./usePagination";
+import useSorting from "../../hooks/useSorting";
 
 const BookGrid = ({
   books,
@@ -21,6 +23,15 @@ const BookGrid = ({
   const [filter, setFilter] = useState("all");
   const [editingBookId, setEditingBookId] = useState(null);
 
+  // Sort options for books
+  const sortOptions = [
+    { value: "title", label: "Title" },
+    { value: "author", label: "Author" },
+    { value: "genre", label: "Genre" },
+    { value: "available_copies", label: "Available Copies" },
+    { value: "total_copies", label: "Total Copies" },
+  ];
+
   // Use custom hooks for filtering and pagination
   const { filteredBooks, isBookBorrowed } = useBookFilter(
     books,
@@ -28,13 +39,22 @@ const BookGrid = ({
     borrowings,
     isLibrarian
   );
+
+  // Apply sorting to filtered results
+  const {
+    sortedItems: sortedBooks,
+    sortField,
+    sortDirection,
+    handleSortChange,
+  } = useSorting(filteredBooks, "title", "asc");
+
   const {
     currentPage,
     paginatedItems: currentBooks,
     totalPages,
     handlePageChange: paginationHandlePageChange,
     resetPagination,
-  } = usePagination(filteredBooks);
+  } = usePagination(sortedBooks);
 
   // Helper function to get all active borrowings for a book (for librarians)
   const getActiveBorrowingsForBook = (bookId) => {
@@ -45,6 +65,12 @@ const BookGrid = ({
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
+    resetPagination();
+    setEditingBookId(null);
+  };
+
+  const handleSortChangeLocal = (field, direction) => {
+    handleSortChange(field, direction);
     resetPagination();
     setEditingBookId(null);
   };
@@ -81,13 +107,24 @@ const BookGrid = ({
 
   return (
     <div className="space-y-4">
-      {/* Filter Controls - Only show for members */}
-      {!isLibrarian && (
-        <BookFilter
-          currentFilter={filter}
-          onFilterChange={handleFilterChange}
+      {/* Filter and Sort Controls */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+        {/* Filter Controls - Only show for members */}
+        {!isLibrarian && (
+          <BookFilter
+            currentFilter={filter}
+            onFilterChange={handleFilterChange}
+          />
+        )}
+
+        {/* Sort Controls */}
+        <SortControl
+          sortField={sortField}
+          sortDirection={sortDirection}
+          onSortChange={handleSortChangeLocal}
+          sortOptions={sortOptions}
         />
-      )}
+      </div>
 
       {/* Book Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-6">

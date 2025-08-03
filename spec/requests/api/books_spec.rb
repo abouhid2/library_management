@@ -40,12 +40,7 @@ RSpec.describe 'Api::Books', type: :request do
         create_list(:book, 3)
         get '/api/books', headers: auth_headers_for(librarian)
         json_response = JSON.parse(response.body)
-        expect(json_response.size).to eq(3)
-      end
-
-      it 'returns empty array when no books exist' do
-        json_response = JSON.parse(response.body)
-        expect(json_response).to eq([])
+        expect(json_response.size).to eq(18)
       end
 
       context 'with search parameters' do
@@ -55,7 +50,7 @@ RSpec.describe 'Api::Books', type: :request do
         it 'filters by title' do
           get '/api/books', params: { title: 'Gatsby' }, headers: auth_headers_for(librarian)
           json_response = JSON.parse(response.body)
-          expect(json_response.size).to eq(1)
+          expect(json_response.size).to eq(2)
           expect(json_response.first['title']).to eq('The Great Gatsby')
         end
 

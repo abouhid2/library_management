@@ -314,7 +314,7 @@ RSpec.describe 'Api::Auth', type: :request do
       it 'returns unauthorized status' do
         # Create a token that's already expired
         payload = { user_id: create(:user).id, exp: 1.hour.ago.to_i }
-        expired_token = JWT.encode(payload, Rails.application.credentials.secret_key_base, 'HS256')
+        expired_token = JWT.encode(payload, Rails.application.secret_key_base, 'HS256')
 
         get '/api/auth/me', headers: { 'Authorization' => "Bearer #{expired_token}" }
 

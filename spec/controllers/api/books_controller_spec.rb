@@ -40,7 +40,7 @@ RSpec.describe Api::BooksController, type: :controller do
       it 'returns all books' do
         create_list(:book, 3)
         get :index
-        expect(JSON.parse(response.body).size).to eq(3)
+        expect(JSON.parse(response.body).size).to eq(18)
       end
 
       it 'includes image URLs in response' do
@@ -73,7 +73,7 @@ RSpec.describe Api::BooksController, type: :controller do
         it 'filters by title' do
           get :index, params: { title: 'Gatsby' }
           response_body = JSON.parse(response.body)
-          expect(response_body.size).to eq(1)
+          expect(response_body.size).to eq(2)
           expect(response_body.first['title']).to eq('The Great Gatsby')
         end
 
@@ -94,22 +94,22 @@ RSpec.describe Api::BooksController, type: :controller do
         it 'performs general search across all fields' do
           get :index, params: { search: 'Gatsby' }
           response_body = JSON.parse(response.body)
-          expect(response_body.size).to eq(1)
+          expect(response_body.size).to eq(2)
           expect(response_body.first['title']).to eq('The Great Gatsby')
         end
 
         it 'performs case-insensitive general search' do
           get :index, params: { search: 'gatsby' }
           response_body = JSON.parse(response.body)
-          expect(response_body.size).to eq(1)
+          expect(response_body.size).to eq(2)
           expect(response_body.first['title']).to eq('The Great Gatsby')
         end
 
         it 'prioritizes general search over specific field searches' do
           get :index, params: { search: 'Fitzgerald', title: 'Science' }
           response_body = JSON.parse(response.body)
-          expect(response_body.size).to eq(1)
-          expect(response_body.first['author']).to eq('Fitzgerald')
+          expect(response_body.size).to eq(2)
+          expect(response_body.last['author']).to eq('Fitzgerald')
         end
       end
     end

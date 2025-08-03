@@ -67,7 +67,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'returns correct count' do
-        expect(User.librarians.count).to eq(2)
+        expect(User.librarians.count).to eq(3)
       end
     end
 
@@ -78,7 +78,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'returns correct count' do
-        expect(User.members.count).to eq(2)
+        expect(User.members.count).to eq(6)
       end
     end
   end

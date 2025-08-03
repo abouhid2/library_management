@@ -2,6 +2,8 @@
 
 A full-stack library management system built with Ruby on Rails (backend) and React (frontend) with comprehensive testing coverage.
 
+![Books 2 Go App Screenshot](client/public/app_img.png)
+
 ## Features
 
 - **Authentication**: User registration and login with JWT-based authentication
@@ -52,7 +54,7 @@ Before you begin, make sure you have the following installed:
 ```bash
 # Clone the repository
 git clone git@github.com:abouhid2/books2go.git
-cd books2Go
+cd books2go/
 
 # Make the setup script executable
 chmod +x setup.sh

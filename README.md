@@ -331,9 +331,9 @@ The project has comprehensive test coverage with:
 
 **Actual Test Results:**
 
-- **Backend (RSpec)**: 342 examples, 0 failures
-- **Frontend (Jest)**: 154 tests, 10 test suites, 0 failures
-- **Combined Total**: 496 individual tests across 36 test suites
+- **Backend (RSpec)**: 340 examples, 0 failures
+- **Frontend (Jest)**: 241 tests, 16 test suites, 8 failures (in useBookForm tests)
+- **Combined Total**: 581 individual tests across 42 test suites
 
 ### Test Files Breakdown
 
@@ -346,8 +346,8 @@ The project has comprehensive test coverage with:
 
 #### Frontend (Jest)
 
-- **Component Tests**: `Dashboard.test.js`, `DashboardHeader.test.js`, `DashboardStats.test.js`, `BorrowingsList.test.js`, `BorrowingsTable.test.js`, `ErrorDisplay.test.js`, `Notification.test.js`
-- **Hook Tests**: `useBorrowings.test.js`, `useDashboard.test.js`
+- **Component Tests**: `Dashboard.test.js`, `DashboardHeader.test.js`, `DashboardStats.test.js`, `BorrowingsList.test.js`, `BorrowingsTable.test.js`, `ErrorDisplay.test.js`, `Notification.test.js`, `BookForm.test.js`, `SearchBar.test.js`, `SortControl.test.js`
+- **Hook Tests**: `useBorrowings.test.js`, `useDashboard.test.js`, `useBookForm.test.js`, `useFormErrors.test.js`, `useSorting.test.js`
 - **App Tests**: `App.test.js`
 
 ### Image Functionality Tests
@@ -362,31 +362,39 @@ The backend includes comprehensive tests for the new image functionality:
 ## Project Structure
 
 ```
-library_management/
+Books2Go/
 ├── app/
 │   ├── controllers/
-│   │   └── api/
-│   │       ├── auth_controller.rb
-│   │       ├── books_controller.rb
-│   │       ├── borrowings_controller.rb
-│   │       └── dashboard_controller.rb
+│   │   ├── api/
+│   │   │   ├── application_controller.rb
+│   │   │   ├── auth_controller.rb
+│   │   │   ├── books_controller.rb
+│   │   │   ├── borrowings_controller.rb
+│   │   │   └── dashboard_controller.rb
+│   │   └── application_controller.rb
 │   ├── models/
-│   │   ├── user.rb
+│   │   ├── application_record.rb
 │   │   ├── book.rb
-│   │   └── borrowing.rb
+│   │   ├── borrowing.rb
+│   │   └── user.rb
 │   └── storage/                    # Active Storage for images
 ├── client/
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── common/
 │   │   │   │   └── LoadingSpinner.js
-│   │   │   ├── Header.js
-│   │   │   ├── NavigationTabs.js
-│   │   │   ├── SearchBar.js
+│   │   │   ├── __tests__/
+│   │   │   │   ├── ErrorDisplay.test.js
+│   │   │   │   ├── Notification.test.js
+│   │   │   │   ├── SearchBar.test.js
+│   │   │   │   └── SortControl.test.js
 │   │   │   ├── ColorPalette.js
-│   │   │   ├── MainContent.js
 │   │   │   ├── DashboardLayout.js
-│   │   │   └── Notification.js
+│   │   │   ├── Header.js
+│   │   │   ├── MainContent.js
+│   │   │   ├── NavigationTabs.js
+│   │   │   ├── Notification.js
+│   │   │   └── SearchBar.js
 │   │   ├── features/
 │   │   │   ├── auth/
 │   │   │   │   ├── components/
@@ -397,18 +405,32 @@ library_management/
 │   │   │   │       └── useAuth.js
 │   │   │   └── books/
 │   │   │       ├── components/
+│   │   │       │   ├── __tests__/
+│   │   │       │   │   ├── BookForm.test.js
+│   │   │       │   │   ├── BorrowingsList.test.js
+│   │   │       │   │   ├── BorrowingsTable.test.js
+│   │   │       │   │   ├── Dashboard.test.js
+│   │   │       │   │   ├── DashboardHeader.test.js
+│   │   │       │   │   └── DashboardStats.test.js
 │   │   │       │   ├── book-grid/
 │   │   │       │   ├── dashboard/
 │   │   │       │   ├── form/
 │   │   │       │   ├── BookForm.js
+│   │   │       │   ├── BookHeader.js
 │   │   │       │   ├── Books.js
-│   │   │       │   ├── Dashboard.js
-│   │   │       │   └── BookHeader.js
+│   │   │       │   └── Dashboard.js
 │   │   │       └── hooks/
+│   │   │           ├── __tests__/
+│   │   │           │   ├── useBookForm.test.js
+│   │   │           │   ├── useBorrowings.test.js
+│   │   │           │   ├── useDashboard.test.js
+│   │   │           │   └── useFormErrors.test.js
 │   │   │           ├── useBookForm.js
-│   │   │           ├── useDashboard.js
+│   │   │           ├── useBooks.js
 │   │   │           ├── useBorrowings.js
-│   │   │           └── useBooks.js
+│   │   │           ├── useDashboard.js
+│   │   │           ├── useFormErrors.js
+│   │   │           └── useSorting.js
 │   │   ├── services/
 │   │   │   └── api.js
 │   │   └── App.js
@@ -416,10 +438,26 @@ library_management/
 ├── spec/
 │   ├── controllers/
 │   │   └── api/
+│   │       ├── auth_controller_spec.rb
+│   │       ├── books_controller_spec.rb
+│   │       ├── borrowings_controller_spec.rb
+│   │       └── dashboard_controller_spec.rb
 │   ├── models/
+│   │   ├── book_spec.rb
+│   │   ├── borrowing_spec.rb
+│   │   ├── user_spec.rb
+│   │   ├── user_borrowing_spec.rb
+│   │   └── book_borrowing_spec.rb
 │   ├── requests/
 │   │   └── api/
+│   │       ├── auth_spec.rb
+│   │       ├── books_spec.rb
+│   │       ├── borrowings_spec.rb
+│   │       └── users_spec.rb
 │   ├── factories/
+│   │   ├── books.rb
+│   │   ├── borrowings.rb
+│   │   └── users.rb
 │   └── fixtures/
 │       └── files/                  # Test images for image functionality
 ├── config/

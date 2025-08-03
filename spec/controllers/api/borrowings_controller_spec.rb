@@ -51,7 +51,7 @@ RSpec.describe Api::BorrowingsController, type: :controller do
 
         get :index
         response_body = JSON.parse(response.body)
-        expect(response_body.size).to eq(22)
+        expect(response_body.size).to eq(23)
       end
 
       it 'includes user and book information in response' do

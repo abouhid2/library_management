@@ -52,7 +52,7 @@ Before you begin, make sure you have the following installed:
 ```bash
 # Clone the repository
 git clone git@github.com:abouhid2/books2go.git
-cd Books2Go
+cd books2Go
 
 # Make the setup script executable
 chmod +x setup.sh

@@ -1,6 +1,22 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import BorrowingsList from "../dashboard/BorrowingsList";
+
+// Mock the SearchBar component
+jest.mock("../../../../components/SearchBar", () => {
+  return function MockSearchBar({ searchQuery, onSearchChange, placeholder }) {
+    return (
+      <div data-testid="search-bar">
+        <input
+          data-testid="search-input"
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
+          placeholder={placeholder}
+        />
+      </div>
+    );
+  };
+});
 
 // Mock the BorrowingsTable component
 jest.mock("../dashboard/BorrowingsTable", () => {
@@ -58,9 +74,10 @@ describe("BorrowingsList", () => {
   });
 
   describe("Rendering", () => {
-    it("renders borrowings table with correct props", () => {
+    it("renders search bar and borrowings table", () => {
       render(<BorrowingsList {...mockProps} />);
 
+      expect(screen.getByTestId("search-bar")).toBeInTheDocument();
       expect(screen.getByTestId("borrowings-table")).toBeInTheDocument();
       expect(screen.getByTestId("is-librarian")).toHaveTextContent("false");
       expect(screen.getByTestId("is-submitting")).toHaveTextContent("false");
@@ -79,11 +96,99 @@ describe("BorrowingsList", () => {
       expect(screen.getByTestId("is-submitting")).toHaveTextContent("true");
     });
 
-    it("displays all borrowings", () => {
+    it("displays all borrowings initially", () => {
       render(<BorrowingsList {...mockProps} />);
 
-      expect(screen.getByTestId("borrowing-0")).toHaveTextContent("Test Book 1");
-      expect(screen.getByTestId("borrowing-1")).toHaveTextContent("Test Book 2");
+      expect(screen.getByTestId("borrowing-0")).toHaveTextContent(
+        "Test Book 1"
+      );
+      expect(screen.getByTestId("borrowing-1")).toHaveTextContent(
+        "Test Book 2"
+      );
+    });
+
+    it("renders search bar with correct placeholder", () => {
+      render(<BorrowingsList {...mockProps} />);
+
+      const searchInput = screen.getByTestId("search-input");
+      expect(searchInput).toHaveAttribute(
+        "placeholder",
+        "Search by book title, author, user name or email"
+      );
+    });
+  });
+
+  describe("Search Functionality", () => {
+    it("filters borrowings by book title", () => {
+      render(<BorrowingsList {...mockProps} />);
+
+      const searchInput = screen.getByTestId("search-input");
+      fireEvent.change(searchInput, { target: { value: "Test Book 1" } });
+
+      expect(screen.getByTestId("borrowings-count")).toHaveTextContent("1");
+      expect(screen.getByTestId("borrowing-0")).toHaveTextContent(
+        "Test Book 1"
+      );
+      expect(screen.queryByTestId("borrowing-1")).not.toBeInTheDocument();
+    });
+
+    it("filters borrowings by author", () => {
+      render(<BorrowingsList {...mockProps} />);
+
+      const searchInput = screen.getByTestId("search-input");
+      fireEvent.change(searchInput, { target: { value: "Test Author 2" } });
+
+      expect(screen.getByTestId("borrowings-count")).toHaveTextContent("1");
+      expect(screen.getByTestId("borrowing-0")).toHaveTextContent(
+        "Test Book 2"
+      );
+    });
+
+    it("filters borrowings by user name", () => {
+      render(<BorrowingsList {...mockProps} />);
+
+      const searchInput = screen.getByTestId("search-input");
+      fireEvent.change(searchInput, { target: { value: "Test User 1" } });
+
+      expect(screen.getByTestId("borrowings-count")).toHaveTextContent("1");
+      expect(screen.getByTestId("borrowing-0")).toHaveTextContent(
+        "Test Book 1"
+      );
+    });
+
+    it("filters borrowings by user email", () => {
+      render(<BorrowingsList {...mockProps} />);
+
+      const searchInput = screen.getByTestId("search-input");
+      fireEvent.change(searchInput, { target: { value: "test2@example.com" } });
+
+      expect(screen.getByTestId("borrowings-count")).toHaveTextContent("1");
+      expect(screen.getByTestId("borrowing-0")).toHaveTextContent(
+        "Test Book 2"
+      );
+    });
+
+    it("shows all borrowings when search is cleared", () => {
+      render(<BorrowingsList {...mockProps} />);
+
+      const searchInput = screen.getByTestId("search-input");
+      fireEvent.change(searchInput, { target: { value: "Test Book 1" } });
+      expect(screen.getByTestId("borrowings-count")).toHaveTextContent("1");
+
+      fireEvent.change(searchInput, { target: { value: "" } });
+      expect(screen.getByTestId("borrowings-count")).toHaveTextContent("2");
+    });
+
+    it("handles case-insensitive search", () => {
+      render(<BorrowingsList {...mockProps} />);
+
+      const searchInput = screen.getByTestId("search-input");
+      fireEvent.change(searchInput, { target: { value: "test book 1" } });
+
+      expect(screen.getByTestId("borrowings-count")).toHaveTextContent("1");
+      expect(screen.getByTestId("borrowing-0")).toHaveTextContent(
+        "Test Book 1"
+      );
     });
   });
 
@@ -107,17 +212,16 @@ describe("BorrowingsList", () => {
     });
   });
 
-  describe("Props Passing", () => {
+  describe("Return Functionality", () => {
     it("passes onReturn function to table", () => {
       const mockReturn = jest.fn();
       render(<BorrowingsList {...mockProps} onReturn={mockReturn} />);
 
-      // The mock component doesn't actually call the function, but we can verify
-      // that the component renders correctly with the prop
+      // The actual return button would be in BorrowingsTable component
       expect(screen.getByTestId("borrowings-table")).toBeInTheDocument();
     });
 
-    it("handles missing onReturn gracefully", () => {
+    it("handles undefined onReturn function", () => {
       render(<BorrowingsList {...mockProps} onReturn={undefined} />);
 
       expect(screen.getByTestId("borrowings-table")).toBeInTheDocument();
@@ -135,28 +239,43 @@ describe("BorrowingsList", () => {
           due_date: "2024-01-14",
           status: "overdue",
         },
+        {
+          id: 2,
+          book: { title: "Test Book", author: null },
+          user: null,
+          borrowed_date: "2023-12-31",
+          due_date: "2024-01-09",
+          status: "overdue",
+        },
       ];
 
-      render(<BorrowingsList {...mockProps} borrowings={incompleteBorrowings} />);
+      render(
+        <BorrowingsList {...mockProps} borrowings={incompleteBorrowings} />
+      );
 
-      expect(screen.getByTestId("borrowing-0")).toHaveTextContent("Unknown Book");
+      expect(screen.getByTestId("borrowings-count")).toHaveTextContent("2");
     });
 
-    it("handles borrowings with missing user data", () => {
+    it("handles search with incomplete data", () => {
       const incompleteBorrowings = [
         {
           id: 1,
-          book: { title: "Test Book", author: "Test Author" },
-          user: null,
+          book: { title: "Test Book", author: null },
+          user: { name: "Test User", email: null },
           borrowed_date: "2023-12-31",
           due_date: "2024-01-14",
           status: "overdue",
         },
       ];
 
-      render(<BorrowingsList {...mockProps} borrowings={incompleteBorrowings} />);
+      render(
+        <BorrowingsList {...mockProps} borrowings={incompleteBorrowings} />
+      );
 
-      expect(screen.getByTestId("borrowings-table")).toBeInTheDocument();
+      const searchInput = screen.getByTestId("search-input");
+      fireEvent.change(searchInput, { target: { value: "Test Book" } });
+
+      expect(screen.getByTestId("borrowings-count")).toHaveTextContent("1");
     });
   });
 });

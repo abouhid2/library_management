@@ -4,7 +4,7 @@ source "https://rubygems.org"
 gem "rails", "~> 8.0.2"
 
 gem "erb", "~> 4.0.3"
-gem "cgi", "~> 0.4.2"
+gem "cgi", "~> 0.5.0"
 # Use sqlite3 as the database for Active Record
 gem "sqlite3", "~> 2.0"
 # Use the Puma web server [https://github.com/puma/puma]

@@ -107,8 +107,7 @@ GEM
       railties (>= 6.1)
     drb (2.2.3)
     ed25519 (1.4.0)
-    erb (4.0.4)
-      cgi (>= 0.3.3)
+    erb (5.0.2)
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
@@ -401,7 +400,7 @@ DEPENDENCIES
   debug
   devise
   dotenv-rails
-  erb (~> 4.0.3)
+  erb (~> 5.0.2)
   factory_bot_rails
   image_processing (~> 1.2)
   jwt

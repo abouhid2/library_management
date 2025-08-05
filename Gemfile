@@ -3,7 +3,7 @@ source "https://rubygems.org"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.2"
 
-gem "erb", "~> 4.0.3"
+gem "erb", "~> 5.0.2"
 gem "cgi", "~> 0.4.2"
 # Use sqlite3 as the database for Active Record
 gem "sqlite3", "~> 2.0"
